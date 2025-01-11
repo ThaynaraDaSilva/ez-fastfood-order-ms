@@ -17,5 +17,6 @@ CREATE TABLE IF NOT EXISTS EZ_FASTFOOD_ORDER.ORDER_ITEMS (
     order_id INT,
     product_id INT,
     quantity INT,
-    price DECIMAL
+    price DECIMAL,
+    FOREIGN KEY (order_id) REFERENCES EZ_FASTFOOD_ORDER.ORDER(id)
 );
