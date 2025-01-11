@@ -11,7 +11,6 @@ import br.com.fiap.ez.fastfood.domain.model.*;
 
 import br.com.fiap.ez.fastfood.domain.repository.OrderRepository;
 
-
 import br.com.fiap.ez.fastfood.frameworks.exception.BusinessException;
 import br.com.fiap.ez.fastfood.infrastructure.mapper.OrderMapper;
 
@@ -29,25 +28,24 @@ public class OrderUseCase {
 	private final UserHttpClient userHttpClient;
 	private final PaymentHttpClient paymentHttpClient;
 
-
 	public OrderUseCase(OrderRepository orderRepository, ProductHttpClient productHttpClient,
 			UserHttpClient userHttpClient, PaymentHttpClient paymentHttpClient) {
 		this.orderRepository = orderRepository;
 		this.productHttpClient = productHttpClient;
-		this.userHttpClient  = userHttpClient;
+		this.userHttpClient = userHttpClient;
 		this.paymentHttpClient = paymentHttpClient;
-		
+
 	}
 
 	public OrderResponseDTO registerOrder(CreateOrderDTO createOrderDTO) {
 		Order saveOrder = new Order();
-		UserDTO userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf())
-	            .orElseThrow(() -> new BusinessException("User not found"));
+		UserDTO userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf());
+		
+	    if(userDTO != null)     {   
+	    	saveOrder.setUserId(userDTO.getId());
+	    }
 
-		if (customer != null) {
-			saveOrder.setCustomer(customer);
-		}
-		saveOrder.setCustomerName(createOrderDTO.getCustomerName());
+	    saveOrder.setUserName(createOrderDTO.getUserName());
 		saveOrder.setOrderTime(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
 		saveOrder.setStatus(OrderStatus.WAITING_PAYMENT);
 
@@ -92,9 +90,11 @@ public class OrderUseCase {
 		} else if (order.getStatus() == OrderStatus.READY) {
 			order.setStatus(OrderStatus.COMPLETED);
 		} else if (order.getStatus() == OrderStatus.WAITING_PAYMENT) {
-			throw new BusinessException("Pedido não pode ser alterado, uma vez que o pagamento ainda não foi confirmado.");
-		}else if (order.getStatus() == OrderStatus.CANCELLED) {
-			throw new BusinessException("Pedido não pode ser atualizado, uma vez que está cancelado por falta de pagamento.");
+			throw new BusinessException(
+					"Pedido não pode ser alterado, uma vez que o pagamento ainda não foi confirmado.");
+		} else if (order.getStatus() == OrderStatus.CANCELLED) {
+			throw new BusinessException(
+					"Pedido não pode ser atualizado, uma vez que está cancelado por falta de pagamento.");
 		}
 
 		order = orderRepository.save(order);
@@ -107,24 +107,22 @@ public class OrderUseCase {
 	}
 
 	public List<OrderResponseDTO> listAllOrders() {
-	
+
 		List<Order> orders = orderRepository.findAll();
-		if(orders.isEmpty()) {
+		if (orders.isEmpty()) {
 			throw new BusinessException("Lista de pedidos vazia");
 		}
 		return orders.stream().map(OrderMapper::domainToResponseDTO).collect(Collectors.toList());
 	}
-	
+
 	public List<OrderResponseDTO> listUncompletedOrders() {
 		List<Order> uncompletedOrders = orderRepository.listUnCompletedOrders();
-		if(!uncompletedOrders.isEmpty()) {
+		if (!uncompletedOrders.isEmpty()) {
 			return uncompletedOrders.stream().map(OrderMapper::domainToResponseDTO).collect(Collectors.toList());
-		}else {
+		} else {
 			throw new BusinessException("Não há pedidos com status 'Pronto', 'Em preparação' ou 'Recebido'");
 		}
-		
+
 	}
-	
-	
 
 }

@@ -107,19 +107,32 @@
       <artifactId>postgresql</artifactId>
       <version>42.2.24</version>
     </dependency>
-    
+
     <dependency>
-	    <groupId>org.junit.jupiter</groupId>
-	    <artifactId>junit-jupiter</artifactId>
-	    <version>5.7.0</version>
-	    <scope>test</scope>
-	</dependency>
-	<dependency>
-	    <groupId>org.junit.jupiter</groupId>
-	    <artifactId>junit-jupiter-engine</artifactId>
-	    <version>5.7.0</version> <!-- You can use the latest version -->
-	    <scope>test</scope>
-	</dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.7.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.7.0</version> <!-- You can use the latest version -->
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Dependencia adicionada para httpclients -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+      <version>4.2.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
 
 
   </dependencies>
@@ -138,7 +151,8 @@
             should run -->
             <configuration>
               <target>
-                <echo message="Copying ${spring.profiles.active} profile properties file..." />
+                <echo
+                  message="Copying ${spring.profiles.active} profile properties file..." />
                 <!-- Copy the profile-specific application properties to
                 application.properties -->
                 <copy
