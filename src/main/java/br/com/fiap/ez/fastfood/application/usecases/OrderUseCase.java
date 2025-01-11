@@ -1,13 +1,17 @@
 package br.com.fiap.ez.fastfood.application.usecases;
 
+import br.com.fiap.ez.fastfood.adapters.out.http.PaymentHttpClient;
+import br.com.fiap.ez.fastfood.adapters.out.http.ProductHttpClient;
+import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
 import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
+import br.com.fiap.ez.fastfood.application.dto.UserDTO;
 import br.com.fiap.ez.fastfood.domain.model.*;
-import br.com.fiap.ez.fastfood.domain.repository.CustomerRepository;
+
 import br.com.fiap.ez.fastfood.domain.repository.OrderRepository;
 
-import br.com.fiap.ez.fastfood.domain.repository.ProductRepository;
+
 import br.com.fiap.ez.fastfood.frameworks.exception.BusinessException;
 import br.com.fiap.ez.fastfood.infrastructure.mapper.OrderMapper;
 
@@ -21,21 +25,24 @@ import java.util.stream.Collectors;
 public class OrderUseCase {
 
 	private final OrderRepository orderRepository;
-	private final ProductRepository productRepository;
-	private final CustomerRepository customerRepository;
-	private final PaymentUseCase paymentUseCase;
+	private final ProductHttpClient productHttpClient;
+	private final UserHttpClient userHttpClient;
+	private final PaymentHttpClient paymentHttpClient;
 
-	public OrderUseCase(OrderRepository orderRepository, ProductRepository productRepository,
-			CustomerRepository customerRepository, PaymentUseCase paymentUseCase) {
+
+	public OrderUseCase(OrderRepository orderRepository, ProductHttpClient productHttpClient,
+			UserHttpClient userHttpClient, PaymentHttpClient paymentHttpClient) {
 		this.orderRepository = orderRepository;
-		this.productRepository = productRepository;
-		this.customerRepository = customerRepository;
-		this.paymentUseCase = paymentUseCase;
+		this.productHttpClient = productHttpClient;
+		this.userHttpClient  = userHttpClient;
+		this.paymentHttpClient = paymentHttpClient;
+		
 	}
 
 	public OrderResponseDTO registerOrder(CreateOrderDTO createOrderDTO) {
 		Order saveOrder = new Order();
-		Customer customer = customerRepository.findByCpf(createOrderDTO.getCustomerCpf());
+		UserDTO userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf())
+	            .orElseThrow(() -> new BusinessException("User not found"));
 
 		if (customer != null) {
 			saveOrder.setCustomer(customer);

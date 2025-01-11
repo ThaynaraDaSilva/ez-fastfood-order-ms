@@ -40,7 +40,7 @@ public class Order {
 	public static double calculateTotalPrice(List<OrderItem> orderItems) {
 		double total = 0;
 		for (OrderItem item : orderItems) {
-			total += item.getQuantity() * item.getProduct().getPrice();
+			//total += item.getQuantity() * item.getProduct().getPrice(); ## fix 2025
 		}
 		return total;
 	}

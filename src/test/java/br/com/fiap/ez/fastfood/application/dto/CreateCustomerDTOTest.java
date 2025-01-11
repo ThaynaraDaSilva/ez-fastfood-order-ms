@@ -12,7 +12,7 @@ public class CreateCustomerDTOTest {
         String name = "John Doe";
         String email = "johndoe@example.com";
 
-        CreateCustomerDTO customerDTO = new CreateCustomerDTO(cpf, name, email);
+        CreateUserDTO_OLD customerDTO = new CreateUserDTO_OLD(cpf, name, email);
 
         assertEquals(cpf, customerDTO.getCpf());
         assertEquals(name, customerDTO.getName());
@@ -25,7 +25,7 @@ public class CreateCustomerDTOTest {
         String name = "Jane Doe";
         String email = "janedoe@example.com";
         
-        CreateCustomerDTO customerDTO = new CreateCustomerDTO(cpf, name, email);
+        CreateUserDTO_OLD customerDTO = new CreateUserDTO_OLD(cpf, name, email);
 
         customerDTO.setCpf(cpf);
         customerDTO.setName(name);
@@ -38,7 +38,7 @@ public class CreateCustomerDTOTest {
 
     @Test
     public void testNullOrEmptyValues() {
-        CreateCustomerDTO customerDTO = new CreateCustomerDTO(null, "", " ");
+        CreateUserDTO_OLD customerDTO = new CreateUserDTO_OLD(null, "", " ");
 
         assertNull(customerDTO.getCpf());
         assertEquals("", customerDTO.getName());

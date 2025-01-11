@@ -2,9 +2,7 @@ package br.com.fiap.ez.fastfood.infrastructure.mapper;
 
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
-import br.com.fiap.ez.fastfood.domain.model.UserId;
 import br.com.fiap.ez.fastfood.domain.model.Order;
-import br.com.fiap.ez.fastfood.domain.model.OrderItem;
 import br.com.fiap.ez.fastfood.domain.model.OrderStatus;
 
 import br.com.fiap.ez.fastfood.infrastructure.persistence.OrderEntity;
@@ -84,7 +82,7 @@ public class OrderMapper {
 		}
 
 		if (order.getUserId() != null) {
-			orderResponseDTO.setUserIdCpf(order.getUserId().getCpf());
+			//orderResponseDTO.setUserIdCpf(order.getUserId().getCpf()); ## fix 2025
 		}
 
 		orderResponseDTO.setUserName(order.getUserName());
@@ -109,9 +107,10 @@ public class OrderMapper {
     	
 		Order order = new Order();
         OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
+        
         orderResponseDTO.setOrderId(entity.getId());
         if(entity.getUserId()!= null) {
-        	//orderResponseDTO.setUserIdCpf(entity.getUserId().getCpf()); ## FIX 2025
+        	// orderResponseDTO.setUserName(entity.getUserName()); ## FIX 2025
         }
         orderResponseDTO.setUserName(entity.getUserName());
         orderResponseDTO.setOrderTime(entity.getOrderTime());
@@ -120,7 +119,9 @@ public class OrderMapper {
         orderResponseDTO.setOrderStatus(entity.getStatus());
         orderResponseDTO.setWaitedTime(order.calculateOrderWaitedTime(entity.getOrderTime(),entity.getOrderTime()));
         List<OrderItemDTO> orderItemDTOs = entity.getOrderItems().stream()
-				.map(orderItem -> new OrderItemDTO(orderItem.getProduct().getId(), orderItem.getQuantity()))
+				.map(orderItem -> new OrderItemDTO(
+						orderItem.getProductId(),
+						orderItem.getQuantity()))
 				.collect(Collectors.toList());
         orderResponseDTO.setOrderItems(orderItemDTOs);
        
