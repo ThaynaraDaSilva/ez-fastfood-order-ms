@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
-public class ProductDTO {
+public class CatalogDTO {
 
     @NotBlank(message = "Nome do produto é obrigatório")
     @JsonProperty("name")
@@ -21,7 +21,7 @@ public class ProductDTO {
     @JsonProperty("price")
     private Double price;
 
-	public ProductDTO(@NotBlank(message = "Nome do produto é obrigatório") String name, String description,Long categoryId,
+	public CatalogDTO(@NotBlank(message = "Nome do produto é obrigatório") String name, String description,Long categoryId,
 			@Min(value = 0, message = "Preço deve ser positivo") Double price) {
 		super();
 		this.name = name;
@@ -30,7 +30,7 @@ public class ProductDTO {
 		this.price = price;
 	}
 
-	public ProductDTO() {
+	public CatalogDTO() {
     }
 
 	public String getName() {

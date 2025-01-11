@@ -1,11 +1,15 @@
 package br.com.fiap.ez.fastfood.application.usecases;
 
+import br.com.fiap.ez.fastfood.adapters.out.http.CatalogHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.PaymentHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.ProductHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
+import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
 import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentRequest;
+import br.com.fiap.ez.fastfood.application.dto.PaymentResponse;
 import br.com.fiap.ez.fastfood.application.dto.UserDTO;
 import br.com.fiap.ez.fastfood.domain.model.*;
 
@@ -24,14 +28,14 @@ import java.util.stream.Collectors;
 public class OrderUseCase {
 
 	private final OrderRepository orderRepository;
-	private final ProductHttpClient productHttpClient;
+	private final CatalogHttpClient catalogHttpClient;
 	private final UserHttpClient userHttpClient;
 	private final PaymentHttpClient paymentHttpClient;
 
-	public OrderUseCase(OrderRepository orderRepository, ProductHttpClient productHttpClient,
+	public OrderUseCase(OrderRepository orderRepository, CatalogHttpClient catalogHttpClient,
 			UserHttpClient userHttpClient, PaymentHttpClient paymentHttpClient) {
 		this.orderRepository = orderRepository;
-		this.productHttpClient = productHttpClient;
+		this.catalogHttpClient = catalogHttpClient;
 		this.userHttpClient = userHttpClient;
 		this.paymentHttpClient = paymentHttpClient;
 
@@ -53,12 +57,19 @@ public class OrderUseCase {
 
 		for (OrderItemDTO item : createOrderDTO.getOrderItems()) {
 			OrderItem orderItem = new OrderItem();
-			Product product = productRepository.findById(item.getProductId())
-					.orElseThrow(() -> new BusinessException("Product not found"));
+			
+			
+			CatalogDTO catalogDTO = catalogHttpClient.findProductById(item.getProductId());
+			if(catalogDTO == null) {
+				throw new BusinessException("Product not found");
+			}else {
+				orderItem.setProductId(item.getProductId());
+				orderItem.setPrice(catalogDTO.getPrice() * item.getQuantity());
+			}
+	
 
-			orderItem.setProduct(product);
 			orderItem.setQuantity(item.getQuantity());
-			orderItem.setPrice(product.getPrice() * item.getQuantity());
+
 			orderItem.setOrder(saveOrder);
 			orderItemList.add(orderItem);
 		}
@@ -73,11 +84,17 @@ public class OrderUseCase {
 		Order savedOrder = orderRepository.save(saveOrder);
 
 		
-		paymentUseCase.registerPayment(savedOrder);
-
+		PaymentRequest paymentRequest = new PaymentRequest();
+	    paymentRequest.setOrderId(savedOrder.getId());
+	    paymentRequest.setUserId(savedOrder.getUserId());
+	    paymentRequest.setAmount(savedOrder.getTotalPrice());
+	    
+	    paymentPublisher.publishPaymentRequest(paymentRequest);
 		
 		return OrderMapper.domainToResponseDTO(savedOrder);
 	}
+	
+	
 
 	public OrderResponseDTO updateOrderStatus(Long orderId) {
 		Order order = orderRepository.findOrderById(orderId);

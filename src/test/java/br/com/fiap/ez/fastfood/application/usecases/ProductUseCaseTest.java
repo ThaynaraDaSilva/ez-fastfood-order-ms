@@ -3,7 +3,7 @@ package br.com.fiap.ez.fastfood.application.usecases;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import br.com.fiap.ez.fastfood.application.dto.ProductDTO;
+import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
 import br.com.fiap.ez.fastfood.application.dto.ProductResponseDTO;
 import br.com.fiap.ez.fastfood.domain.model.Category;
 import br.com.fiap.ez.fastfood.domain.model.Product;
@@ -29,14 +29,14 @@ class ProductUseCaseTest {
     @InjectMocks
     private ProductUseCase productUseCase;
 
-    private ProductDTO productDTO;
+    private CatalogDTO productDTO;
     private Product product;
     private Category category;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        ProductDTO productDTO = new ProductDTO();
+        CatalogDTO productDTO = new CatalogDTO();
         productDTO.setName("Product Name");
         productDTO.setDescription("Product Description");
         productDTO.setPrice(100.0);
@@ -48,7 +48,7 @@ class ProductUseCaseTest {
 
     @Test
     void testSaveProductSuccess() {
-    	ProductDTO productDTO = new ProductDTO();
+    	CatalogDTO productDTO = new CatalogDTO();
         productDTO.setName("Product Name");
         productDTO.setDescription("Product Description");
         productDTO.setPrice(100.0);

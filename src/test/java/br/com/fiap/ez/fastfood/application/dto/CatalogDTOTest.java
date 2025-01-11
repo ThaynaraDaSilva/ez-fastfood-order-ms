@@ -10,13 +10,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Set;
 
-public class ProductDTOTest {
+public class CatalogDTOTest {
 
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     
     @Test
     public void testEmptyConstructor() {
-        ProductDTO productDTO = new ProductDTO();
+        CatalogDTO productDTO = new CatalogDTO();
 
         assertNull(productDTO.getName());
         assertNull(productDTO.getDescription());
@@ -31,7 +31,7 @@ public class ProductDTOTest {
         Long categoryId = 1L;
         Double price = 20.50;
 
-        ProductDTO productDTO = new ProductDTO();
+        CatalogDTO productDTO = new CatalogDTO();
 
         productDTO.setName(name);
         productDTO.setDescription(description);
@@ -51,7 +51,7 @@ public class ProductDTOTest {
         Long categoryId = 1L;
         Double price = 20.50;
 
-        ProductDTO productDTO = new ProductDTO(name, description, categoryId, price);
+        CatalogDTO productDTO = new CatalogDTO(name, description, categoryId, price);
 
 
         assertEquals(0, validator.validate(productDTO).size());
@@ -64,12 +64,12 @@ public class ProductDTOTest {
         Long categoryId = 1L;
         Double price = 20.50;
 
-        ProductDTO productDTO = new ProductDTO(name, description, categoryId, price);
+        CatalogDTO productDTO = new CatalogDTO(name, description, categoryId, price);
 
-        Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
+        Set<ConstraintViolation<CatalogDTO>> violations = validator.validate(productDTO);
         assertEquals(1, violations.size());
 
-        ConstraintViolation<ProductDTO> violation = violations.iterator().next();
+        ConstraintViolation<CatalogDTO> violation = violations.iterator().next();
         assertEquals("Nome do produto é obrigatório", violation.getMessage());
         assertEquals("name", violation.getPropertyPath().toString());
     }
@@ -81,12 +81,12 @@ public class ProductDTOTest {
         Long categoryId = 1L;
         Double price = 20.50;
 
-        ProductDTO productDTO = new ProductDTO(name, description, categoryId, price);
+        CatalogDTO productDTO = new CatalogDTO(name, description, categoryId, price);
 
-        Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
+        Set<ConstraintViolation<CatalogDTO>> violations = validator.validate(productDTO);
         assertEquals(1, violations.size());
 
-        ConstraintViolation<ProductDTO> violation = violations.iterator().next();
+        ConstraintViolation<CatalogDTO> violation = violations.iterator().next();
         assertEquals("Nome do produto é obrigatório", violation.getMessage());
         assertEquals("name", violation.getPropertyPath().toString());
     }
@@ -98,12 +98,12 @@ public class ProductDTOTest {
         Long categoryId = 1L;
         Double price = -5.00;
 
-        ProductDTO productDTO = new ProductDTO(name, description, categoryId, price);
+        CatalogDTO productDTO = new CatalogDTO(name, description, categoryId, price);
 
-        Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
+        Set<ConstraintViolation<CatalogDTO>> violations = validator.validate(productDTO);
         assertEquals(1, violations.size());
 
-        ConstraintViolation<ProductDTO> violation = violations.iterator().next();
+        ConstraintViolation<CatalogDTO> violation = violations.iterator().next();
         assertEquals("Preço deve ser positivo", violation.getMessage());
         assertEquals("price", violation.getPropertyPath().toString());
     }
@@ -115,7 +115,7 @@ public class ProductDTOTest {
         Long categoryId = 1L;
         Double price = 20.50;
 
-        ProductDTO productDTO = new ProductDTO(name, description, categoryId, price);
+        CatalogDTO productDTO = new CatalogDTO(name, description, categoryId, price);
 
         assertEquals(0, validator.validate(productDTO).size());
     }

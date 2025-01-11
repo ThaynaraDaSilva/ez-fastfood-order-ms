@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class HttpClientProperties {
 
 	private String userUrl;
-	private String productUrl;
+	private String catalogUrl;
 	private String paymentUrl;
 	
 	public String getUserUrl() {
@@ -19,12 +19,12 @@ public class HttpClientProperties {
         this.userUrl = userUrl;
     }
 
-    public String getProductUrl() {
-        return productUrl;
+    public String getCatalogUrl() {
+        return catalogUrl;
     }
 
-    public void setProductUrl(String productUrl) {
-        this.productUrl = productUrl;
+    public void setCatalogUrl(String catalogUrl) {
+        this.catalogUrl = catalogUrl;
     }
 
     public String getPaymentUrl() {
