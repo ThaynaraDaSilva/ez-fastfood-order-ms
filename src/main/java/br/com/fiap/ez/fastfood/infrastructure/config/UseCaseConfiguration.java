@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import br.com.fiap.ez.fastfood.adapters.out.http.CatalogHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.PaymentHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
+import br.com.fiap.ez.fastfood.adapters.out.messaging.PaymentPublisher;
 import br.com.fiap.ez.fastfood.application.usecases.OrderUseCase;
 
 import br.com.fiap.ez.fastfood.domain.repository.OrderRepository;
@@ -19,7 +20,7 @@ public class UseCaseConfiguration {
 	public OrderUseCase orderUseCase(OrderRepository orderRepository, 
 			CatalogHttpClient catalogHttpClient,
 			UserHttpClient userHttpClient,
-			PaymentHttpClient paymentHttpClient) {
-		return new OrderUseCase(orderRepository,catalogHttpClient,userHttpClient,paymentHttpClient);
+			PaymentPublisher paymentPublisher) {
+		return new OrderUseCase(orderRepository,catalogHttpClient,userHttpClient,paymentPublisher);
 	}
 }

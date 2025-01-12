@@ -4,6 +4,7 @@ import br.com.fiap.ez.fastfood.adapters.out.http.CatalogHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.PaymentHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.ProductHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
+import br.com.fiap.ez.fastfood.adapters.out.messaging.PaymentPublisher;
 import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
 import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
@@ -30,14 +31,14 @@ public class OrderUseCase {
 	private final OrderRepository orderRepository;
 	private final CatalogHttpClient catalogHttpClient;
 	private final UserHttpClient userHttpClient;
-	private final PaymentHttpClient paymentHttpClient;
+	private final PaymentPublisher paymentPublisher;
 
 	public OrderUseCase(OrderRepository orderRepository, CatalogHttpClient catalogHttpClient,
-			UserHttpClient userHttpClient, PaymentHttpClient paymentHttpClient) {
+			UserHttpClient userHttpClient, PaymentPublisher paymentPublisher) {
 		this.orderRepository = orderRepository;
 		this.catalogHttpClient = catalogHttpClient;
 		this.userHttpClient = userHttpClient;
-		this.paymentHttpClient = paymentHttpClient;
+		this.paymentPublisher = paymentPublisher;
 
 	}
 
