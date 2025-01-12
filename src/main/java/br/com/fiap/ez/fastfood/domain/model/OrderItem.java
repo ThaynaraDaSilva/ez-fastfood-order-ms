@@ -4,7 +4,7 @@ public class OrderItem {
 
     private Long id;
     private Order order;
-    private Product product;
+    private Long productId;
     private Integer quantity;
     private Double price;
 
@@ -12,20 +12,21 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    // Constructor
-    public OrderItem(Order order, Product product, Integer quantity, Double price) {
-        this.order = order;
-        this.product = product;
-        this.quantity = quantity;
-        this.price = price;
-    }
+    public OrderItem(Order order, Long productId, Integer quantity, Double price) {
+		this.order = order;
+		this.productId = productId;
+		this.quantity = quantity;
+		this.price = price;
+	}
 
     // Getters and setters
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+
+
+	public void setId(Long id) {
         this.id = id;
     }
 
@@ -37,15 +38,18 @@ public class OrderItem {
         this.order = order;
     }
 
-    public Product getProduct() {
-        return product;
-    }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+    public Long getProductId() {
+		return productId;
+	}
 
-    public Integer getQuantity() {
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+
+	public Integer getQuantity() {
         return quantity;
     }
 

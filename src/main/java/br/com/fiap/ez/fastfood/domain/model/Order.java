@@ -10,34 +10,37 @@ public class Order {
 
 	private Long id;
 	private String orderNumber;
-	private Customer customer;
+	private Long userId;
+	private String userName;
 	private ZonedDateTime orderTime;
 	private ZonedDateTime completedTime;
 	private Double totalPrice;
 	private OrderStatus status;
-	private String customerName;
 	private List<OrderItem> orderItems;
 
 	public Order() {
 	}
 
-	public Order(Long id, String orderNumber, Customer customer, ZonedDateTime orderTime, ZonedDateTime completedTime,
-			Double totalPrice, OrderStatus status, String customerName, List<OrderItem> orderItems) {
+	
+	public Order(Long id, String orderNumber, Long userId, String userName, ZonedDateTime orderTime,
+			ZonedDateTime completedTime, Double totalPrice, OrderStatus status,List<OrderItem> orderItems) {
+		super();
 		this.id = id;
 		this.orderNumber = orderNumber;
-		this.customer = customer;
+		this.userId = userId;
+		this.userName = userName;
 		this.orderTime = orderTime;
 		this.completedTime = completedTime;
 		this.totalPrice = totalPrice;
 		this.status = status;
-		this.customerName = customerName;
 		this.orderItems = orderItems;
 	}
+
 
 	public static double calculateTotalPrice(List<OrderItem> orderItems) {
 		double total = 0;
 		for (OrderItem item : orderItems) {
-			total += item.getQuantity() * item.getProduct().getPrice();
+			//total += item.getQuantity() * item.getProduct().getPrice(); ## fix 2025
 		}
 		return total;
 	}
@@ -69,7 +72,7 @@ public class Order {
 
 		int nextOrderNumber = calculateNextOrderNumber(lastOrder);
 
-		return formatOrderNumber(nextOrderNumber, customerName);
+		return formatOrderNumber(nextOrderNumber, userName);
 	}
 
 	// Obtem a data atual no fuso horário de São Paulo
@@ -115,6 +118,28 @@ public class Order {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 
 	public String getOrderNumber() {
 		return orderNumber;
@@ -124,13 +149,6 @@ public class Order {
 		this.orderNumber = orderNumber;
 	}
 
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
 
 	public ZonedDateTime getOrderTime() {
 		return orderTime.withZoneSameInstant(ZoneId.of("America/Sao_Paulo"));
@@ -164,14 +182,7 @@ public class Order {
 		this.status = status;
 	}
 
-	public String getCustomerName() {
-		return customerName;
-	}
-
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
-
+	
 	public List<OrderItem> getOrderItems() {
 		return orderItems;
 	}

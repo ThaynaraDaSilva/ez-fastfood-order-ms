@@ -1,13 +1,21 @@
 package br.com.fiap.ez.fastfood.application.usecases;
 
+import br.com.fiap.ez.fastfood.adapters.out.http.CatalogHttpClient;
+import br.com.fiap.ez.fastfood.adapters.out.http.PaymentHttpClient;
+import br.com.fiap.ez.fastfood.adapters.out.http.ProductHttpClient;
+import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
+import br.com.fiap.ez.fastfood.adapters.out.messaging.PaymentPublisher;
+import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
 import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentResponseDTO;
+import br.com.fiap.ez.fastfood.application.dto.UserDTO;
 import br.com.fiap.ez.fastfood.domain.model.*;
-import br.com.fiap.ez.fastfood.domain.repository.CustomerRepository;
+
 import br.com.fiap.ez.fastfood.domain.repository.OrderRepository;
 
-import br.com.fiap.ez.fastfood.domain.repository.ProductRepository;
 import br.com.fiap.ez.fastfood.frameworks.exception.BusinessException;
 import br.com.fiap.ez.fastfood.infrastructure.mapper.OrderMapper;
 
@@ -21,26 +29,28 @@ import java.util.stream.Collectors;
 public class OrderUseCase {
 
 	private final OrderRepository orderRepository;
-	private final ProductRepository productRepository;
-	private final CustomerRepository customerRepository;
-	private final PaymentUseCase paymentUseCase;
+	private final CatalogHttpClient catalogHttpClient;
+	private final UserHttpClient userHttpClient;
+	private final PaymentPublisher paymentPublisher;
 
-	public OrderUseCase(OrderRepository orderRepository, ProductRepository productRepository,
-			CustomerRepository customerRepository, PaymentUseCase paymentUseCase) {
+	public OrderUseCase(OrderRepository orderRepository, CatalogHttpClient catalogHttpClient,
+			UserHttpClient userHttpClient, PaymentPublisher paymentPublisher) {
 		this.orderRepository = orderRepository;
-		this.productRepository = productRepository;
-		this.customerRepository = customerRepository;
-		this.paymentUseCase = paymentUseCase;
+		this.catalogHttpClient = catalogHttpClient;
+		this.userHttpClient = userHttpClient;
+		this.paymentPublisher = paymentPublisher;
+
 	}
 
 	public OrderResponseDTO registerOrder(CreateOrderDTO createOrderDTO) {
 		Order saveOrder = new Order();
-		Customer customer = customerRepository.findByCpf(createOrderDTO.getCustomerCpf());
+		UserDTO userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf());
+		
+	    if(userDTO != null)     {   
+	    	saveOrder.setUserId(userDTO.getId());
+	    }
 
-		if (customer != null) {
-			saveOrder.setCustomer(customer);
-		}
-		saveOrder.setCustomerName(createOrderDTO.getCustomerName());
+	    saveOrder.setUserName(createOrderDTO.getUserName());
 		saveOrder.setOrderTime(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
 		saveOrder.setStatus(OrderStatus.WAITING_PAYMENT);
 
@@ -48,12 +58,19 @@ public class OrderUseCase {
 
 		for (OrderItemDTO item : createOrderDTO.getOrderItems()) {
 			OrderItem orderItem = new OrderItem();
-			Product product = productRepository.findById(item.getProductId())
-					.orElseThrow(() -> new BusinessException("Product not found"));
+			
+			
+			CatalogDTO catalogDTO = catalogHttpClient.findProductById(item.getProductId());
+			if(catalogDTO == null) {
+				throw new BusinessException("Product not found");
+			}else {
+				orderItem.setProductId(item.getProductId());
+				orderItem.setPrice(catalogDTO.getPrice() * item.getQuantity());
+			}
+	
 
-			orderItem.setProduct(product);
 			orderItem.setQuantity(item.getQuantity());
-			orderItem.setPrice(product.getPrice() * item.getQuantity());
+
 			orderItem.setOrder(saveOrder);
 			orderItemList.add(orderItem);
 		}
@@ -68,11 +85,17 @@ public class OrderUseCase {
 		Order savedOrder = orderRepository.save(saveOrder);
 
 		
-		paymentUseCase.registerPayment(savedOrder);
-
+		PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
+	    paymentRequest.setOrderId(savedOrder.getId());
+	    paymentRequest.setUserId(savedOrder.getUserId());
+	    paymentRequest.setAmount(savedOrder.getTotalPrice());
+	    
+	    paymentPublisher.publishPaymentRequest(paymentRequest);
 		
 		return OrderMapper.domainToResponseDTO(savedOrder);
 	}
+	
+	
 
 	public OrderResponseDTO updateOrderStatus(Long orderId) {
 		Order order = orderRepository.findOrderById(orderId);
@@ -85,9 +108,11 @@ public class OrderUseCase {
 		} else if (order.getStatus() == OrderStatus.READY) {
 			order.setStatus(OrderStatus.COMPLETED);
 		} else if (order.getStatus() == OrderStatus.WAITING_PAYMENT) {
-			throw new BusinessException("Pedido não pode ser alterado, uma vez que o pagamento ainda não foi confirmado.");
-		}else if (order.getStatus() == OrderStatus.CANCELLED) {
-			throw new BusinessException("Pedido não pode ser atualizado, uma vez que está cancelado por falta de pagamento.");
+			throw new BusinessException(
+					"Pedido não pode ser alterado, uma vez que o pagamento ainda não foi confirmado.");
+		} else if (order.getStatus() == OrderStatus.CANCELLED) {
+			throw new BusinessException(
+					"Pedido não pode ser atualizado, uma vez que está cancelado por falta de pagamento.");
 		}
 
 		order = orderRepository.save(order);
@@ -100,24 +125,22 @@ public class OrderUseCase {
 	}
 
 	public List<OrderResponseDTO> listAllOrders() {
-	
+
 		List<Order> orders = orderRepository.findAll();
-		if(orders.isEmpty()) {
+		if (orders.isEmpty()) {
 			throw new BusinessException("Lista de pedidos vazia");
 		}
 		return orders.stream().map(OrderMapper::domainToResponseDTO).collect(Collectors.toList());
 	}
-	
+
 	public List<OrderResponseDTO> listUncompletedOrders() {
 		List<Order> uncompletedOrders = orderRepository.listUnCompletedOrders();
-		if(!uncompletedOrders.isEmpty()) {
+		if (!uncompletedOrders.isEmpty()) {
 			return uncompletedOrders.stream().map(OrderMapper::domainToResponseDTO).collect(Collectors.toList());
-		}else {
+		} else {
 			throw new BusinessException("Não há pedidos com status 'Pronto', 'Em preparação' ou 'Recebido'");
 		}
-		
+
 	}
-	
-	
 
 }

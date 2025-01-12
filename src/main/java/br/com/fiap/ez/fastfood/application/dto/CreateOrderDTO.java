@@ -8,31 +8,31 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CreateOrderDTO {
 
-	@JsonProperty("customer_name")
-	private String customerName;
+	@JsonProperty("user_name")
+	private String userName;
 
-	@JsonProperty("customer_cpf")
-	@Schema(description = "Customer CPF (optional)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private String customerCpf = "";
+	@JsonProperty("user_cpf")
+	@Schema(description = "User CPF (optional)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+	private String userCpf = "";
 
 	@JsonProperty("order_items")
 	private List<OrderItemDTO> orderItems;
 
 
-	public String getCustomerName() {
-		return customerName;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
-	public String getCustomerCpf() {
-		return customerCpf;
+	public String getUserCpf() {
+		return userCpf;
 	}
 
-	public void setCustomerCpf(String customerCpf) {
-		this.customerCpf = customerCpf;
+	public void setUserCpf(String userCpf) {
+		this.userCpf = userCpf;
 	}
 
 	public List<OrderItemDTO> getOrderItems() {

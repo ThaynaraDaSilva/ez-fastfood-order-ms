@@ -18,9 +18,11 @@ public class OrderEntity {
 	@Column(name = "order_number")
 	private String orderNumber;
 
-	@ManyToOne
-	@JoinColumn(name = "customer_id", nullable = true)
-	private CustomerEntity customer;
+	@Column(name = "user_id")
+	private Long userId;
+	
+	@Column(name = "user_name", nullable = true)
+	private String userName;
 
 	@Column(name = "order_time")
 	private ZonedDateTime orderTime;
@@ -35,31 +37,32 @@ public class OrderEntity {
 	@Column(name = "order_status", nullable = true)
 	private OrderStatus status;
 
-	@Column(name = "customer_name", nullable = true)
-	private String customerName;
-
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 
+	
 	private List<OrderItemEntity> orderItems = new ArrayList<>();
 
 	public OrderEntity() {
 		super();
 	}
 
-	public OrderEntity(Long id, String orderNumber, CustomerEntity customer, ZonedDateTime orderTime,
-			ZonedDateTime completedTime, Double totalPrice, OrderStatus status, String customerName,
-			List<OrderItemEntity> orderItems) {
+	
+
+	public OrderEntity(Long id, String orderNumber, Long userId, String userName, ZonedDateTime orderTime,
+			ZonedDateTime completedTime, Double totalPrice, OrderStatus status, List<OrderItemEntity> orderItems) {
 		super();
 		this.id = id;
 		this.orderNumber = orderNumber;
-		this.customer = customer;
+		this.userId = userId;
+		this.userName = userName;
 		this.orderTime = orderTime;
 		this.completedTime = completedTime;
 		this.totalPrice = totalPrice;
 		this.status = status;
-		this.customerName = customerName;
 		this.orderItems = orderItems;
 	}
+
+
 
 	public void addOrderItem(OrderItemEntity orderItem) {
 		orderItems.add(orderItem);
@@ -73,6 +76,32 @@ public class OrderEntity {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	
+
+	public Long getUserId() {
+		return userId;
+	}
+
+
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+
 
 	public String getOrderNumber() {
 		return orderNumber;
@@ -82,13 +111,6 @@ public class OrderEntity {
 		this.orderNumber = orderNumber;
 	}
 
-	public CustomerEntity getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(CustomerEntity customer) {
-		this.customer = customer;
-	}
 
 	public ZonedDateTime getOrderTime() {
 		return orderTime;
@@ -122,13 +144,6 @@ public class OrderEntity {
 		this.status = status;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
-
-	public String getCustomerName() {
-		return customerName;
-	}
 
 	public List<OrderItemEntity> getOrderItems() {
 		return orderItems;

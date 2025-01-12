@@ -2,9 +2,7 @@ package br.com.fiap.ez.fastfood.infrastructure.mapper;
 
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
-import br.com.fiap.ez.fastfood.domain.model.Customer;
 import br.com.fiap.ez.fastfood.domain.model.Order;
-import br.com.fiap.ez.fastfood.domain.model.OrderItem;
 import br.com.fiap.ez.fastfood.domain.model.OrderStatus;
 
 import br.com.fiap.ez.fastfood.infrastructure.persistence.OrderEntity;
@@ -20,11 +18,13 @@ public class OrderMapper {
 	public static Order entityToDomain(OrderEntity entity) {
 		Order order = new Order();
 		order.setId(entity.getId());
-		if (entity.getCustomer() != null) {
-			order.setCustomer(CustomerMapper.entityToDomain(entity.getCustomer()));
+		if (entity.getUserId() != null) {
+			order.setUserId(entity.getUserId());
+			order.setUserName(entity.getUserName());
+		}else {
+			order.setUserName(entity.getUserName());
 		}
 		order.setOrderNumber(entity.getOrderNumber());
-		order.setCustomerName(entity.getCustomerName());
 		order.setOrderTime(entity.getOrderTime());
 		order.setCompletedTime(entity.getCompletedTime());
 		order.setTotalPrice(entity.getTotalPrice());
@@ -46,8 +46,8 @@ public class OrderMapper {
 	    entity.setCompletedTime(order.getCompletedTime());
 	    entity.setTotalPrice(order.getTotalPrice());
 	    entity.setStatus(order.getStatus());
-	    entity.setCustomerName(order.getCustomerName());
-	    entity.setCustomer(CustomerMapper.domainToEntity(order.getCustomer()));
+	    entity.setUserName(order.getUserName());
+	    //entity.setUserId(CustomerMapper.domainToEntity(order.getCustomer())); ## COMENTADO 2025
 
 	    
 	    List<OrderItemEntity> orderItemEntities = order.getOrderItems().stream()
@@ -81,11 +81,11 @@ public class OrderMapper {
 			orderResponseDTO.setCompletedTime(order.getCompletedTime());
 		}
 
-		if (order.getCustomer() != null) {
-			orderResponseDTO.setCustomerCpf(order.getCustomer().getCpf());
+		if (order.getUserId() != null) {
+			//orderResponseDTO.setUserIdCpf(order.getUserId().getCpf()); ## fix 2025
 		}
 
-		orderResponseDTO.setCustomerName(order.getCustomerName());
+		orderResponseDTO.setUserName(order.getUserName());
 		orderResponseDTO.setOrderStatus(order.getStatus());
 		if(order.getStatus() == OrderStatus.RECEIVED 
 				|| order.getStatus() == OrderStatus.IN_PREPARATION 
@@ -96,7 +96,7 @@ public class OrderMapper {
 
 		// Map Order Items to DTO
 		List<OrderItemDTO> orderItemDTOs = order.getOrderItems().stream()
-				.map(orderItem -> new OrderItemDTO(orderItem.getProduct().getId(), orderItem.getQuantity()))
+				.map(orderItem -> new OrderItemDTO(orderItem.getProductId(), orderItem.getQuantity()))
 				.collect(Collectors.toList());
 		orderResponseDTO.setOrderItems(orderItemDTOs);
 
@@ -107,18 +107,21 @@ public class OrderMapper {
     	
 		Order order = new Order();
         OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
+        
         orderResponseDTO.setOrderId(entity.getId());
-        if(entity.getCustomer()!= null) {
-        	orderResponseDTO.setCustomerCpf(entity.getCustomer().getCpf());
+        if(entity.getUserId()!= null) {
+        	// orderResponseDTO.setUserName(entity.getUserName()); ## FIX 2025
         }
-        orderResponseDTO.setCustomerName(entity.getCustomerName());
+        orderResponseDTO.setUserName(entity.getUserName());
         orderResponseDTO.setOrderTime(entity.getOrderTime());
         orderResponseDTO.setCompletedTime( entity.getCompletedTime());
         orderResponseDTO.setTotalPrice(entity.getTotalPrice());
         orderResponseDTO.setOrderStatus(entity.getStatus());
         orderResponseDTO.setWaitedTime(order.calculateOrderWaitedTime(entity.getOrderTime(),entity.getOrderTime()));
         List<OrderItemDTO> orderItemDTOs = entity.getOrderItems().stream()
-				.map(orderItem -> new OrderItemDTO(orderItem.getProduct().getId(), orderItem.getQuantity()))
+				.map(orderItem -> new OrderItemDTO(
+						orderItem.getProductId(),
+						orderItem.getQuantity()))
 				.collect(Collectors.toList());
         orderResponseDTO.setOrderItems(orderItemDTOs);
        

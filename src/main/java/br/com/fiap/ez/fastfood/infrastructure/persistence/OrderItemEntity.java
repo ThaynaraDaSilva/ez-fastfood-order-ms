@@ -15,9 +15,8 @@ public class OrderItemEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private OrderEntity order;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
-    private ProductEntity product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
@@ -30,11 +29,11 @@ public class OrderItemEntity {
     }
 
 
-    public OrderItemEntity(Long id, OrderEntity order, ProductEntity product, Integer quantity, Double price) {
+	public OrderItemEntity(Long id, OrderEntity order, Long productId, Integer quantity, Double price) {
 		super();
 		this.id = id;
 		this.order = order;
-		this.product = product;
+		this.productId = productId;
 		this.quantity = quantity;
 		this.price = price;
 	}
@@ -56,14 +55,6 @@ public class OrderItemEntity {
         this.order = order;
     }
 
-    public ProductEntity getProduct() {
-        return product;
-    }
-
-    public void setProduct(ProductEntity product) {
-        this.product = product;
-    }
-
     public Integer getQuantity() {
         return quantity;
     }
@@ -79,4 +70,16 @@ public class OrderItemEntity {
     public void setPrice(Double price) {
         this.price = price;
     }
+
+
+	public Long getProductId() {
+		return productId;
+	}
+
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+    
+    
 }

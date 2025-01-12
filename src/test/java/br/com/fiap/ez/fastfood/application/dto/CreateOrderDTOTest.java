@@ -10,14 +10,14 @@ import java.util.List;
 public class CreateOrderDTOTest {
 
 	@Test
-	public void testConstructorWithCustomerNameOnly() {
-	  String customerName = "Jane Doe";
+	public void testConstructorWithuserNameOnly() {
+	  String userName = "Jane Doe";
 
 	  CreateOrderDTO createOrderDTO = new CreateOrderDTO();
-	  createOrderDTO.setCustomerName(customerName); 
+	  createOrderDTO.setUserName(userName); 
 
-	  assertEquals(customerName, createOrderDTO.getCustomerName());
-	  assertEquals("", createOrderDTO.getCustomerCpf());
+	  assertEquals(userName, createOrderDTO.getUserName());
+	  assertEquals("", createOrderDTO.getUserCpf());
 	  assertNull(createOrderDTO.getOrderItems());
 	}
 
@@ -25,30 +25,30 @@ public class CreateOrderDTOTest {
     public void testAllGettersAndSetters() {
         CreateOrderDTO createOrderDTO = new CreateOrderDTO();
 
-        String customerName = "Michael Smith";
-        String customerCpf = "98765432100";
+        String userName = "Michael Smith";
+        String userCpf = "98765432100";
         List<OrderItemDTO> orderItems = new ArrayList<>();
 
-        createOrderDTO.setCustomerName(customerName);
-        createOrderDTO.setCustomerCpf(customerCpf);
+        createOrderDTO.setUserName(userName);
+        createOrderDTO.setUserCpf(userCpf);
         createOrderDTO.setOrderItems(orderItems);
 
-        assertEquals(customerName, createOrderDTO.getCustomerName());
-        assertEquals(customerCpf, createOrderDTO.getCustomerCpf());
+        assertEquals(userName, createOrderDTO.getUserName());
+        assertEquals(userCpf, createOrderDTO.getUserCpf());
         assertEquals(orderItems, createOrderDTO.getOrderItems());
     }
 
     @Test
-    public void testNullOrEmptyCustomerCpf() {
+    public void testNullOrEmptyuserCpf() {
         CreateOrderDTO createOrderDTO = new CreateOrderDTO();
 
-        createOrderDTO.setCustomerCpf(null);
-        createOrderDTO.setCustomerCpf("");
+        createOrderDTO.setUserCpf(null);
+        createOrderDTO.setUserCpf("");
 
-        assertEquals("", createOrderDTO.getCustomerCpf());
+        assertEquals("", createOrderDTO.getUserCpf());
 
-        createOrderDTO.setCustomerCpf(" ");
-        assertEquals(" ", createOrderDTO.getCustomerCpf());
+        createOrderDTO.setUserCpf(" ");
+        assertEquals(" ", createOrderDTO.getUserCpf());
     }
 
 }

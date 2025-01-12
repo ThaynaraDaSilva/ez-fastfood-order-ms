@@ -3,10 +3,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>br.com.fiap</groupId>
-  <artifactId>ez-fast-food</artifactId>
+  <artifactId>ez-fastfood-order-ms</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>ez-fast-food</name>
-  <description>EZ Fast Food API</description>
+  <description>ez-fastfood-order-ms</description>
   <packaging>jar</packaging>
 
   <parent>
@@ -107,19 +107,38 @@
       <artifactId>postgresql</artifactId>
       <version>42.2.24</version>
     </dependency>
-    
+
     <dependency>
-	    <groupId>org.junit.jupiter</groupId>
-	    <artifactId>junit-jupiter</artifactId>
-	    <version>5.7.0</version>
-	    <scope>test</scope>
-	</dependency>
-	<dependency>
-	    <groupId>org.junit.jupiter</groupId>
-	    <artifactId>junit-jupiter-engine</artifactId>
-	    <version>5.7.0</version> <!-- You can use the latest version -->
-	    <scope>test</scope>
-	</dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.7.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.7.0</version> <!-- You can use the latest version -->
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Dependencia adicionada para httpclients -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+      <version>4.2.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>sqs</artifactId>
+      <version>2.29.49</version>
+    </dependency>
 
 
   </dependencies>
@@ -138,7 +157,8 @@
             should run -->
             <configuration>
               <target>
-                <echo message="Copying ${spring.profiles.active} profile properties file..." />
+                <echo
+                  message="Copying ${spring.profiles.active} profile properties file..." />
                 <!-- Copy the profile-specific application properties to
                 application.properties -->
                 <copy
