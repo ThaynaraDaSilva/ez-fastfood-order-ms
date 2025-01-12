@@ -9,8 +9,8 @@ import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
 import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
-import br.com.fiap.ez.fastfood.application.dto.PaymentRequest;
-import br.com.fiap.ez.fastfood.application.dto.PaymentResponse;
+import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentResponseDTO;
 import br.com.fiap.ez.fastfood.application.dto.UserDTO;
 import br.com.fiap.ez.fastfood.domain.model.*;
 
@@ -85,7 +85,7 @@ public class OrderUseCase {
 		Order savedOrder = orderRepository.save(saveOrder);
 
 		
-		PaymentRequest paymentRequest = new PaymentRequest();
+		PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
 	    paymentRequest.setOrderId(savedOrder.getId());
 	    paymentRequest.setUserId(savedOrder.getUserId());
 	    paymentRequest.setAmount(savedOrder.getTotalPrice());

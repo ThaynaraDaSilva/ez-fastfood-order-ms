@@ -1,6 +1,6 @@
 package br.com.fiap.ez.fastfood.application.dto;
 
-public class PaymentResponse {
+public class PaymentResponseDTO {
 
 	private String status;
     private String transactionId;

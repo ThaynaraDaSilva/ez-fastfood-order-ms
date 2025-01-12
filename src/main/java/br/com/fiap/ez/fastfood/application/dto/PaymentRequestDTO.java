@@ -1,6 +1,6 @@
 package br.com.fiap.ez.fastfood.application.dto;
 
-public class PaymentRequest {
+public class PaymentRequestDTO {
 
 	private Long orderId;
     private Long userId;

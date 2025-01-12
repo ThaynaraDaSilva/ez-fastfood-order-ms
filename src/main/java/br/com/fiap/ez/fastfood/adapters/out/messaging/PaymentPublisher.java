@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.fiap.ez.fastfood.application.dto.PaymentRequest;
+import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
 import br.com.fiap.ez.fastfood.infrastructure.config.AmazonSQSProperties;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
@@ -21,7 +21,7 @@ public class PaymentPublisher {
         this.sqsProperties = sqsProperties;
     }
 
-    public void publishPaymentRequest(PaymentRequest paymentRequest) {
+    public void publishPaymentRequest(PaymentRequestDTO paymentRequest) {
         try {
             String messageBody = new ObjectMapper().writeValueAsString(paymentRequest);
 
