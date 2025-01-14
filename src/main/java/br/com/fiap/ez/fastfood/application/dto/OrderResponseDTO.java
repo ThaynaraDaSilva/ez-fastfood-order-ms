@@ -22,6 +22,9 @@ public class OrderResponseDTO {
 	@JsonProperty("order_number")
 	private String orderNumber = "";
 	
+	@JsonProperty("user_id")
+	private Long userId;
+	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("user_cpf")
 	@Schema(description = "User CPF (optional)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -173,6 +176,16 @@ public class OrderResponseDTO {
 	public void setOrderItems(List<OrderItemDTO> orderItems) {
 		this.orderItems = orderItems;
 	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
 
 	public String getUserCpf() {
 		return userCpf;
