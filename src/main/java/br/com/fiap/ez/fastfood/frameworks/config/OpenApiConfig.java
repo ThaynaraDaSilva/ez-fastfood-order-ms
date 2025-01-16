@@ -12,8 +12,8 @@ public class OpenApiConfig {
 		public OpenAPI customOpenApi() {
 			return new OpenAPI()
 					.info(new Info()
-					.title("EZ Fast Food")
-					.description("API - EZ Fast Food Orders")
+					.title("ORDER MS")
+					.description("ez-fastfood-order-ms")
 					.version("1.0"));
 					
 		}

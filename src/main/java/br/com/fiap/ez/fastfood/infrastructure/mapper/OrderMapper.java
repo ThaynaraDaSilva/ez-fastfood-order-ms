@@ -83,6 +83,8 @@ public class OrderMapper {
 
 		if (order.getUserId() != null) {
 			//orderResponseDTO.setUserIdCpf(order.getUserId().getCpf()); ## fix 2025
+			orderResponseDTO.setUserId(order.getUserId());
+			orderResponseDTO.setUserName(order.getUserName());
 		}
 
 		orderResponseDTO.setUserName(order.getUserName());
