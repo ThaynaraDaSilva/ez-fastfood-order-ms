@@ -83,6 +83,7 @@ public class OrderResponseDTO {
 		this.orderTime = orderTime;
 		this.completedTime = completedTime;
 		this.totalPrice = totalPrice;
+		//
 		this.orderStatus = orderStatus;
 	}
 
