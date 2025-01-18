@@ -92,12 +92,12 @@ public class OrderUseCase {
 		Order savedOrder = orderRepository.save(saveOrder);
 
 		
-		PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
+		/*PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
 	    paymentRequest.setOrderId(savedOrder.getId());
 	    paymentRequest.setUserId(savedOrder.getUserId());
 	    paymentRequest.setAmount(savedOrder.getTotalPrice());
 	    
-	    paymentPublisher.publishPaymentRequest(paymentRequest);
+	    paymentPublisher.publishPaymentRequest(paymentRequest);*/
 		
 		return OrderMapper.domainToResponseDTO(savedOrder);
 	}
