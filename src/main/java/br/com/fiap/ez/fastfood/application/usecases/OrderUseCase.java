@@ -44,7 +44,14 @@ public class OrderUseCase {
 
 	public OrderResponseDTO registerOrder(CreateOrderDTO createOrderDTO) {
 		Order saveOrder = new Order();
-		UserDTO userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf());
+		UserDTO userDTO = null;
+		
+		// chamar integracao somente quando o cpf for fornecido.
+		if(createOrderDTO.getUserCpf()!=null && !createOrderDTO.getUserCpf().isBlank()) {
+			System.out.println("CHEGUEI AQUI");
+			userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf());
+			System.out.println("PASSEI DAQUI");
+		}
 		
 	    if(userDTO != null)     {   
 	    	saveOrder.setUserId(userDTO.getId());
