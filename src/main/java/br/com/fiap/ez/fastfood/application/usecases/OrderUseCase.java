@@ -66,16 +66,15 @@ public class OrderUseCase {
 		for (OrderItemDTO item : createOrderDTO.getOrderItems()) {
 			OrderItem orderItem = new OrderItem();
 			
-			
+			// AVALIAR IMPACTO
 			CatalogDTO catalogDTO = catalogHttpClient.findProductById(item.getProductId());
 			if(catalogDTO == null) {
 				throw new BusinessException("Product not found");
 			}else {
 				orderItem.setProductId(item.getProductId());
-				orderItem.setPrice(catalogDTO.getPrice() * item.getQuantity());
+				orderItem.setPrice(catalogDTO.getPrice()); 	
 			}
 	
-
 			orderItem.setQuantity(item.getQuantity());
 
 			orderItem.setOrder(saveOrder);
@@ -84,6 +83,7 @@ public class OrderUseCase {
 
 		saveOrder.setOrderItems(orderItemList);
 		saveOrder.calculateAndSetTotalPrice();
+		System.out.println("Order total price: " + saveOrder.getTotalPrice());
 
 		Order lastOrder = orderRepository.findLastOrder();
 
