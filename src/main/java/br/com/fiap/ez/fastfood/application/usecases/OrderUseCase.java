@@ -49,13 +49,10 @@ public class OrderUseCase {
 		// chamar integracao somente quando o cpf for fornecido.
 		if(createOrderDTO.getUserCpf()!= null && !createOrderDTO.getUserCpf().isBlank()) {
 			userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf());
-			System.out.println("USER ID: " + userDTO.getId());
 			saveOrder.setUserId(userDTO.getId());
 		}
 		
-		/*
-		 * if(userDTO != null) { saveOrder.setUserId(userDTO.getId()); }
-		 */
+
 
 	    saveOrder.setUserName(createOrderDTO.getUserName());
 		saveOrder.setOrderTime(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
@@ -83,15 +80,12 @@ public class OrderUseCase {
 
 		saveOrder.setOrderItems(orderItemList);
 		saveOrder.calculateAndSetTotalPrice();
-		System.out.println("Order total price: " + saveOrder.getTotalPrice());
-
+		
 		Order lastOrder = orderRepository.findLastOrder();
 
 		saveOrder.setOrderNumber(saveOrder.generateOrderNumber(lastOrder));
-		System.out.println("SAVE ORDER USER ID: " + saveOrder.getUserId());
-		saveOrder.setUserId(userDTO.getId());
 		Order savedOrder = orderRepository.save(saveOrder);
-		System.out.println("SAVED ORDER USER ID: " + savedOrder.getUserId());
+		
 
 		
 		/*PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
