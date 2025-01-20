@@ -25,10 +25,10 @@ public class OrderResponseDTO {
 	@JsonProperty("user_id")
 	private Long userId;
 	
-	@JsonInclude(JsonInclude.Include.NON_NULL)
+	/*@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty("user_cpf")
 	@Schema(description = "User CPF (optional)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private String userCpf = "";
+	private String userCpf = "";*/
 
 	@JsonProperty("user_name")
 	private String userName = "";
@@ -75,23 +75,30 @@ public class OrderResponseDTO {
 
 
 
-	public OrderResponseDTO(Long orderId, String userCpf, String userName, ZonedDateTime orderTime, ZonedDateTime completedTime,
-			Double totalPrice, OrderStatus orderStatus) {
-		this.orderId = orderId;
-		this.userCpf = userCpf;
-		this.userName = userName;
-		this.orderTime = orderTime;
-		this.completedTime = completedTime;
-		this.totalPrice = totalPrice;
-		//
-		this.orderStatus = orderStatus;
-	}
+	/*
+	 * public OrderResponseDTO(Long orderId, String userCpf, String userName,
+	 * ZonedDateTime orderTime, ZonedDateTime completedTime, Double totalPrice,
+	 * OrderStatus orderStatus) { this.orderId = orderId; this.userCpf = userCpf;
+	 * this.userName = userName; this.orderTime = orderTime; this.completedTime =
+	 * completedTime; this.totalPrice = totalPrice; // this.orderStatus =
+	 * orderStatus; }
+	 */
+	
 
+	//CONTEM O CPF
 
-	public OrderResponseDTO(String userCpf, String userName, ZonedDateTime orderTime, ZonedDateTime completedTime, Double totalPrice,
+	/*
+	 * public OrderResponseDTO(String userCpf, String userName, ZonedDateTime
+	 * orderTime, ZonedDateTime completedTime, Double totalPrice, OrderStatus
+	 * orderStatus, List<OrderItemDTO> orderItems) { super(); this.userCpf =
+	 * userCpf; this.userName = userName; this.orderTime = orderTime;
+	 * this.completedTime = completedTime; this.totalPrice = totalPrice;
+	 * this.orderStatus = orderStatus; this.orderItems = orderItems; }
+	 */
+	
+	public OrderResponseDTO(String userName, ZonedDateTime orderTime, ZonedDateTime completedTime, Double totalPrice,
 			OrderStatus orderStatus, List<OrderItemDTO> orderItems) {
 		super();
-		this.userCpf = userCpf;
 		this.userName = userName;
 		this.orderTime = orderTime;
 		this.completedTime = completedTime;
@@ -100,14 +107,29 @@ public class OrderResponseDTO {
 		this.orderItems = orderItems;
 	}
 
-	
-	public OrderResponseDTO(Long orderId, String orderNumber, String userCpf, String userName,
+	// CONTEM O CPF
+	/*public OrderResponseDTO(Long orderId, String orderNumber, String userCpf, String userName,
 			ZonedDateTime orderTime, ZonedDateTime completedTime, Double totalPrice, OrderStatus orderStatus,
 			List<OrderItemDTO> orderItems, String waitedTime) {
 		super();
 		this.orderId = orderId;
 		this.orderNumber = orderNumber;
 		this.userCpf = userCpf;
+		this.userName = userName;
+		this.orderTime = orderTime;
+		this.completedTime = completedTime;
+		this.totalPrice = totalPrice;
+		this.orderStatus = orderStatus;
+		this.orderItems = orderItems;
+		this.waitedTime = waitedTime;
+	}*/
+	
+	public OrderResponseDTO(Long orderId, String orderNumber, String userName,
+			ZonedDateTime orderTime, ZonedDateTime completedTime, Double totalPrice, OrderStatus orderStatus,
+			List<OrderItemDTO> orderItems, String waitedTime) {
+		super();
+		this.orderId = orderId;
+		this.orderNumber = orderNumber;
 		this.userName = userName;
 		this.orderTime = orderTime;
 		this.completedTime = completedTime;
@@ -188,13 +210,11 @@ public class OrderResponseDTO {
 	}
 
 
-	public String getUserCpf() {
-		return userCpf;
-	}
-
-	public void setUserCpf(String userCpf) {
-		this.userCpf = userCpf;
-	}
+	/*
+	 * public String getUserCpf() { return userCpf; }
+	 * 
+	 * public void setUserCpf(String userCpf) { this.userCpf = userCpf; }
+	 */
 
 	public Long getOrderId() {
 		return orderId;

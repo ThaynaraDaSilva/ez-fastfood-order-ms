@@ -47,7 +47,10 @@ public class OrderMapper {
 	    entity.setTotalPrice(order.getTotalPrice());
 	    entity.setStatus(order.getStatus());
 	    entity.setUserName(order.getUserName());
-	    //entity.setUserId(CustomerMapper.domainToEntity(order.getCustomer())); ## COMENTADO 2025
+	    if(order.getUserId()!=null) {
+		    entity.setUserId(order.getUserId()); 
+	    }
+
 
 	    
 	    List<OrderItemEntity> orderItemEntities = order.getOrderItems().stream()
@@ -111,7 +114,7 @@ public class OrderMapper {
         
         orderResponseDTO.setOrderId(entity.getId());
         if(entity.getUserId()!= null) {
-        	// orderResponseDTO.setUserName(entity.getUserName()); ## FIX 2025
+        	orderResponseDTO.setUserId(entity.getUserId());
         }
         orderResponseDTO.setUserName(entity.getUserName());
         orderResponseDTO.setOrderTime(entity.getOrderTime());

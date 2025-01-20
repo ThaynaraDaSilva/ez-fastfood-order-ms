@@ -44,11 +44,15 @@ public class OrderUseCase {
 
 	public OrderResponseDTO registerOrder(CreateOrderDTO createOrderDTO) {
 		Order saveOrder = new Order();
-		UserDTO userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf());
+		UserDTO userDTO = null;
 		
-	    if(userDTO != null)     {   
-	    	saveOrder.setUserId(userDTO.getId());
-	    }
+		// chamar integracao somente quando o cpf for fornecido.
+		if(createOrderDTO.getUserCpf()!= null && !createOrderDTO.getUserCpf().isBlank()) {
+			userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf());
+			saveOrder.setUserId(userDTO.getId());
+		}
+		
+
 
 	    saveOrder.setUserName(createOrderDTO.getUserName());
 		saveOrder.setOrderTime(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
@@ -59,16 +63,15 @@ public class OrderUseCase {
 		for (OrderItemDTO item : createOrderDTO.getOrderItems()) {
 			OrderItem orderItem = new OrderItem();
 			
-			
+			// AVALIAR IMPACTO
 			CatalogDTO catalogDTO = catalogHttpClient.findProductById(item.getProductId());
 			if(catalogDTO == null) {
 				throw new BusinessException("Product not found");
 			}else {
 				orderItem.setProductId(item.getProductId());
-				orderItem.setPrice(catalogDTO.getPrice() * item.getQuantity());
+				orderItem.setPrice(catalogDTO.getPrice()); 	
 			}
 	
-
 			orderItem.setQuantity(item.getQuantity());
 
 			orderItem.setOrder(saveOrder);
@@ -77,20 +80,20 @@ public class OrderUseCase {
 
 		saveOrder.setOrderItems(orderItemList);
 		saveOrder.calculateAndSetTotalPrice();
-
+		
 		Order lastOrder = orderRepository.findLastOrder();
 
 		saveOrder.setOrderNumber(saveOrder.generateOrderNumber(lastOrder));
-
 		Order savedOrder = orderRepository.save(saveOrder);
+		
 
 		
-		PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
+		/*PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
 	    paymentRequest.setOrderId(savedOrder.getId());
 	    paymentRequest.setUserId(savedOrder.getUserId());
 	    paymentRequest.setAmount(savedOrder.getTotalPrice());
 	    
-	    paymentPublisher.publishPaymentRequest(paymentRequest);
+	    paymentPublisher.publishPaymentRequest(paymentRequest);*/
 		
 		return OrderMapper.domainToResponseDTO(savedOrder);
 	}
