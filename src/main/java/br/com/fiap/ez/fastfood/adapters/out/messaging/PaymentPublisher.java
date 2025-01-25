@@ -19,6 +19,7 @@ public class PaymentPublisher {
     public PaymentPublisher(SqsClient sqsClient, AmazonSQSProperties sqsProperties) {
         this.sqsClient = sqsClient;
         this.sqsProperties = sqsProperties;
+        
     }
 
     public void publishPaymentRequest(PaymentRequestDTO paymentRequest) {
@@ -29,7 +30,6 @@ public class PaymentPublisher {
                     .queueUrl(sqsProperties.getPaymentQueueUrl()) // Use the property from the config class
                     .messageBody(messageBody)
                     .build();
-
             sqsClient.sendMessage(sendMessageRequest);
         } catch (Exception e) {
             throw new RuntimeException("Failed to publish payment request to SQS", e);

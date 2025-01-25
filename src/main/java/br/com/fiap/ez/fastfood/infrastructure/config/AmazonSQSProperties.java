@@ -9,10 +9,10 @@ public class AmazonSQSProperties {
 
 	private String paymentQueueUrl;
     private String paymentResultQueueUrl;
-
     private String region;
     private String accessKey;
     private String secretKey;
+
 
     // Getters and Setters
     public String getPaymentQueueUrl() {
@@ -54,4 +54,6 @@ public class AmazonSQSProperties {
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
     }
+
+    
 }

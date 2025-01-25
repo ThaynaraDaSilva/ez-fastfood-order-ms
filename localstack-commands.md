@@ -1,9 +1,9 @@
 # LocalStack Commands
 
-## Iniciar localstack 
+### Iniciar localstack 
 localstack start
 
-## Configurar creds da AWS
+### Configurar creds da AWS
 aws configure
 set AWS_ACCESS_KEY_ID=test
 set AWS_SECRET_ACCESS_KEY=test
@@ -17,3 +17,9 @@ awslocal --endpoint-url=https://localhost.localstack.cloud:4566 sqs create-queue
 
 // comando que funcionou para criar fila
 awslocal --endpoint-url=https://localhost.localstack.cloud:4566 sqs create-queue --queue-name order-payment-queue --region us-east-1 --attributes file://C:\THAYNARA_DEV\workspaces\ez-fastfood-order-ms\src\main\resources\attributes.json
+
+// verificar atributos da fila
+awslocal --endpoint-url=https://localhost.localstack.cloud:4566 sqs get-queue-attributes --queue-url https://localhost.localstack.cloud:4566/000000000000/order-payment-queue --attribute-names All --region us-east-1
+
+### Comandos de apoio
+aws sqs list-queues --endpoint-url=http://localhost:4566 --region us-east-1
