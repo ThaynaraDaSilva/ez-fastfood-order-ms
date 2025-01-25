@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ezfastfood-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ezfastfood
+  template:
+    metadata:
+      labels:
+        app: ezfastfood
+    spec:
+      containers:
+      - name: ezfastfood-container
+        image: dasilvathaynara/ez-fast-food-api:v3
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: JAVA_OPTS
+          value: "-Xms100m -Xmx512m -XX:+UseParallelGC"  # JVM options
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: ezfastfood-secret         # Reference to the Secret holding the sensitive info
+              key: POSTGRES_DB                # The key in the Secret
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: ezfastfood-secret         # Reference to the Secret holding the sensitive info
+              key: POSTGRES_USER              # The key in the Secret
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ezfastfood-secret         # Reference to the Secret holding the sensitive info
+              key: POSTGRES_PASSWORD          # The key in the Secret
+        envFrom:
+        - configMapRef:
+            name: ezfastfood-api-configmap    # Reference to the ConfigMap for non-sensitive data
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "150Mi"
+          limits:
+            cpu: "300m"
+            memory: "500Mi"
+        readinessProbe:
+          httpGet:
+            path: /actuator/health 
+            port: 8080
+          initialDelaySeconds: 35
+          periodSeconds: 10
+          failureThreshold: 3
