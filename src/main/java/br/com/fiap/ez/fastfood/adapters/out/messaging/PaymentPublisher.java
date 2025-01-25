@@ -9,6 +9,10 @@ import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
 import br.com.fiap.ez.fastfood.infrastructure.config.AmazonSQSProperties;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.annotation.Backoff;
+
+
 
 @Service
 public class PaymentPublisher {
@@ -22,6 +26,7 @@ public class PaymentPublisher {
         
     }
 
+    @Retryable (value = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 1000)) //1seg de intervalo
     public void publishPaymentRequest(PaymentRequestDTO paymentRequest) {
         try {
             String messageBody = new ObjectMapper().writeValueAsString(paymentRequest);
@@ -35,5 +40,7 @@ public class PaymentPublisher {
             throw new RuntimeException("Failed to publish payment request to SQS", e);
         }
     }
+    
+    
 
 }

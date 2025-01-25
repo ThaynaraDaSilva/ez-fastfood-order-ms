@@ -23,3 +23,8 @@ awslocal --endpoint-url=https://localhost.localstack.cloud:4566 sqs get-queue-at
 
 ### Comandos de apoio
 aws sqs list-queues --endpoint-url=http://localhost:4566 --region us-east-1
+
+awslocal sqs send-message --queue-url http://localhost:4566/000000000000/order-payment-queue --message-body "{\"orderId\":123,\"amount\":50.0}" --region us-east-1
+
+aws sts get-caller-identity --region us-east-1
+
