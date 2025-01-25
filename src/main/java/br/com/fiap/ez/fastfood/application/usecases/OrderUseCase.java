@@ -19,11 +19,13 @@ import br.com.fiap.ez.fastfood.domain.repository.OrderRepository;
 import br.com.fiap.ez.fastfood.frameworks.exception.BusinessException;
 import br.com.fiap.ez.fastfood.infrastructure.mapper.OrderMapper;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.stream.Collectors;
 
 public class OrderUseCase {
@@ -32,6 +34,8 @@ public class OrderUseCase {
 	private final CatalogHttpClient catalogHttpClient;
 	private final UserHttpClient userHttpClient;
 	private final PaymentPublisher paymentPublisher;
+	
+	//private static final Logger LOGGER = LogManager.getLogger(PaymentPublisher.class);
 
 	public OrderUseCase(OrderRepository orderRepository, CatalogHttpClient catalogHttpClient,
 			UserHttpClient userHttpClient, PaymentPublisher paymentPublisher) {
@@ -45,16 +49,14 @@ public class OrderUseCase {
 	public OrderResponseDTO registerOrder(CreateOrderDTO createOrderDTO) {
 		Order saveOrder = new Order();
 		UserDTO userDTO = null;
-		
+
 		// chamar integracao somente quando o cpf for fornecido.
-		if(createOrderDTO.getUserCpf()!= null && !createOrderDTO.getUserCpf().isBlank()) {
+		if (createOrderDTO.getUserCpf() != null && !createOrderDTO.getUserCpf().isBlank()) {
 			userDTO = userHttpClient.getUserByCpf(createOrderDTO.getUserCpf());
 			saveOrder.setUserId(userDTO.getId());
 		}
-		
 
-
-	    saveOrder.setUserName(createOrderDTO.getUserName());
+		saveOrder.setUserName(createOrderDTO.getUserName());
 		saveOrder.setOrderTime(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
 		saveOrder.setStatus(OrderStatus.WAITING_PAYMENT);
 
@@ -62,16 +64,16 @@ public class OrderUseCase {
 
 		for (OrderItemDTO item : createOrderDTO.getOrderItems()) {
 			OrderItem orderItem = new OrderItem();
-			
+
 			// AVALIAR IMPACTO
 			CatalogDTO catalogDTO = catalogHttpClient.findProductById(item.getProductId());
-			if(catalogDTO == null) {
+			if (catalogDTO == null) {
 				throw new BusinessException("Product not found");
-			}else {
+			} else {
 				orderItem.setProductId(item.getProductId());
-				orderItem.setPrice(catalogDTO.getPrice()); 	
+				orderItem.setPrice(catalogDTO.getPrice());
 			}
-	
+
 			orderItem.setQuantity(item.getQuantity());
 
 			orderItem.setOrder(saveOrder);
@@ -80,25 +82,27 @@ public class OrderUseCase {
 
 		saveOrder.setOrderItems(orderItemList);
 		saveOrder.calculateAndSetTotalPrice();
-		
+
 		Order lastOrder = orderRepository.findLastOrder();
 
 		saveOrder.setOrderNumber(saveOrder.generateOrderNumber(lastOrder));
 		Order savedOrder = orderRepository.save(saveOrder);
-		
 
-		
-		/*PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
-	    paymentRequest.setOrderId(savedOrder.getId());
-	    paymentRequest.setUserId(savedOrder.getUserId());
-	    paymentRequest.setAmount(savedOrder.getTotalPrice());
-	    
-	    paymentPublisher.publishPaymentRequest(paymentRequest);*/
-		
+		try {
+
+			PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
+			paymentRequest.setOrderId(savedOrder.getId());
+			paymentRequest.setUserId(savedOrder.getUserId());
+			paymentRequest.setAmount(savedOrder.getTotalPrice());
+
+			paymentPublisher.publishPaymentRequest(paymentRequest);
+
+		} catch (Exception e) {
+		    throw new RuntimeException("Failed to publish payment request for orderId: " + savedOrder.getId(), e);
+		}
+
 		return OrderMapper.domainToResponseDTO(savedOrder);
 	}
-	
-	
 
 	public OrderResponseDTO updateOrderStatus(Long orderId) {
 		Order order = orderRepository.findOrderById(orderId);
