@@ -3,6 +3,7 @@ resource "aws_eip" "nat"{
 
     tags = {
       Name = "${local.env}-nat"
+      project = "${local.project}"
     }
 }
 
@@ -12,6 +13,7 @@ resource "aws_nat_gateway" "nat" {
 
     tags = {
         Name = "${local.env}-nat"
+        project = "${local.project}"
     }
 
     # waits for the internet gateway to be created

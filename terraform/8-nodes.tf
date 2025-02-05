@@ -3,7 +3,7 @@ resource "aws_iam_role" "nodes" {
 
   assume_role_policy = <<POLICY
   {
-    "Version": 2012-10-17,
+    "Version": "2012-10-17",
     "Statement": [
         {
             "Effect": "Allow",
@@ -47,7 +47,7 @@ resource "aws_eks_node_group" "general" {
   ]
 
   capacity_type  = "ON_DEMAND"
-  instance_types = ["t3.large"]
+  instance_types = ["t3.micro"]
 
   scaling_config {
     desired_size = 1
