@@ -31,8 +31,9 @@ resource "aws_iam_role_policy_attachment" "amazon_eks_cni_policy"{
 
 # AmazonEC2Container Registry Read Only to pull private Docker images from ECR container Registry
 resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_only"{
-    policy_arn = "arn:aws:iam::aws:policy/amazon_EC2_ContainerRegistryReadOnly"
+    policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
     role = aws_iam_role.nodes.name
+    #role       = aws_iam_role.nodes.arn  # Change from .name to .arn
 }
 
 resource "aws_eks_node_group" "general" {

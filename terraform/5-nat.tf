@@ -2,7 +2,7 @@ resource "aws_eip" "nat"{
     domain = "vpc"
 
     tags = {
-      Name = "${local.env}-nat"
+      Name = "${local.project}-nat-${local.env}"
       project = "${local.project}"
     }
 }
@@ -12,7 +12,7 @@ resource "aws_nat_gateway" "nat" {
     subnet_id = aws_subnet.public_zone1.id
 
     tags = {
-        Name = "${local.env}-nat"
+        Name = "${local.project}-nat-${local.env}"
         project = "${local.project}"
     }
 

@@ -7,7 +7,8 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name = "${local.env}-private"
+    Name = "${local.project}-${local.env}-private"
+    project = "${local.project}"
   }
 }
 
@@ -16,11 +17,12 @@ resource "aws_route_table" "public" {
 
   route{
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_internet_gateway.igw.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 
   tags = {
-    Name = "${local.env}-public"
+    Name = "${local.project}-${local.env}-public"
+    project = "${local.project}"
   }
 }
 

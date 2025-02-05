@@ -3,7 +3,7 @@ resource "aws_internet_gateway" "igw" {
 
   tags = {
     # capital N makes the tag visible by default in the AWS Console
-    Name = "${local.env}-igw"
+    Name = "${local.project}-igw-${local.env}"
     project = "${local.project}"
   }
 }
