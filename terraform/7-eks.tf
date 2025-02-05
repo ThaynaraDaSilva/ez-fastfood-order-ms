@@ -1,5 +1,5 @@
 resource "aws_iam_role" "eks" {
-    name = "${local.env}-${local.eks_name}-eks-cluster"
+    name = "${local.eks_name}-eks-cluster-${local.env}"
 
     assume_role_policy = <<POLICY
 {
@@ -28,8 +28,8 @@ resource "aws_eks_cluster" "eks" {
   role_arn = aws_iam_role.eks.arn
 
   vpc_config {
-    endpoint_private_access = false
-    endpoint_public_access = true
+    endpoint_private_access = true
+    endpoint_public_access = false
 
     subnet_ids = [
         aws_subnet.private_zone1.id,

@@ -4,6 +4,7 @@ resource "aws_route_table" "private" {
   route{
     cidr_block = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat.id
+    #gateway_id = aws_internet_gateway.igw.id  # Agora os pods acessam a internet diretamente via IGW
   }
 
   tags = {

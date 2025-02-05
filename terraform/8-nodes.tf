@@ -1,5 +1,5 @@
 resource "aws_iam_role" "nodes" {
-  name = "${local.env}-${local.eks_name}-eks-nodes"
+  name = "${local.eks_name}-eks-nodes-${local.env}"
 
   assume_role_policy = <<POLICY
   {
@@ -53,7 +53,7 @@ resource "aws_eks_node_group" "general" {
   scaling_config {
     desired_size = 1
     max_size = 3
-    min_size = 0
+    min_size = 1
   }
   # cluster upgrades
   update_config {
