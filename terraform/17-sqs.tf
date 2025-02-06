@@ -26,3 +26,55 @@ resource "aws_sqs_queue" "order_payment_queue" {
     project = "${local.project}"
   }
 }
+
+resource "aws_iam_policy" "sqs_access" {
+  name        = "EKS-SQS-Access"
+  description = "Permite que os nodes do EKS acessem a fila SQS"
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
+          "sqs:GetQueueUrl"
+        ]
+        Resource = aws_sqs_queue.order_payment_queue.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_sqs_attach" {
+  role       = aws_iam_role.nodes.name  # Nome do role dos nodes do EKS
+  policy_arn = aws_iam_policy.sqs_access.arn
+}
+
+resource "aws_sqs_queue_policy" "sqs_policy" {
+  queue_url = aws_sqs_queue.order_payment_queue.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = "*"
+        Action = [
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage"
+        ]
+        Resource = aws_sqs_queue.order_payment_queue.arn
+        Condition = {
+          ArnEquals = {
+            "aws:SourceArn" = "arn:aws:execute-api:us-east-1:123456789012:api-id/*"
+          }
+        }
+      }
+    ]
+  })
+}
