@@ -16,7 +16,8 @@ resource "aws_security_group" "eks_nodes" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    security_groups = [aws_security_group.db_sg.id]
+    #security_groups = [aws_security_group.db_sg.id]
+    cidr_blocks = ["10.0.0.0/16"]  # Permitir acesso dentro da própria VPC
   }
 
   # Permitir saída de tráfego para qualquer destino (internet ou outros serviços internos)
@@ -29,5 +30,6 @@ resource "aws_security_group" "eks_nodes" {
 
   tags = {
     Name = "eks-nodes-sg-${local.env}"
+    project = "${local.project}"
   }
 }
