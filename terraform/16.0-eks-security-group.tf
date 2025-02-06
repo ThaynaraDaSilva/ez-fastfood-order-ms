@@ -1,6 +1,6 @@
 resource "aws_security_group" "eks_nodes" {
   name        = "eks-nodes-sg-${local.env}"
-  description = "Security Group para os nós do EKS"
+  description = "Security Group para os nos do EKS"
   vpc_id      = aws_vpc.main.id
 
   # Permite tráfego entre os nós do cluster EKS
