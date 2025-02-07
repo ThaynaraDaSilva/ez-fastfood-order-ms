@@ -1,11 +1,12 @@
 name: Build, Test, and Push Docker Image
 
 on:
+  push:
+    branches:
+        - feature/deploy-ms-configuration 
   pull_request:
     branches:
       - main
-      - feature/deploy-ms-configuration
-
 env:
   JAVA_VERSION: '17'
 
