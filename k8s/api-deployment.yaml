@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ezfastfood-api-deployment
+  name: ezfastfood-order-ms
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ezfastfood
+      app: ezfastfood-order-ms
   template:
     metadata:
       labels:
-        app: ezfastfood
+        app: ezfastfood-order-ms
     spec:
       containers:
-      - name: ezfastfood-container
-        image: dasilvathaynara/ez-fast-food-api:v3
-        imagePullPolicy: IfNotPresent
+      - name: ezfastfood-order-ms-container
+        image: dasilvathaynara/ez-fastfood-order-ms:latest
+        imagePullPolicy: Always # sempre baixa a ultima versao
         ports:
         - containerPort: 8080
         env:
@@ -50,6 +50,6 @@ spec:
           httpGet:
             path: /actuator/health 
             port: 8080
-          initialDelaySeconds: 35
+          initialDelaySeconds: 20 # reduzido para melhorar o startup - fase 4
           periodSeconds: 10
           failureThreshold: 3

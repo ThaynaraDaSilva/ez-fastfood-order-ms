@@ -1,3 +1,23 @@
+resource "aws_security_group" "eks_cluster_sg" {
+  name        = "eks-cluster-sg"
+  description = "Security Group for EKS Cluster"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Update this to limit access if needed
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_iam_role" "eks" {
     name = "${local.eks_name}-eks-cluster-${local.env}"
 
@@ -29,12 +49,13 @@ resource "aws_eks_cluster" "eks" {
 
   vpc_config {
     endpoint_private_access = true
-    endpoint_public_access = false
+    endpoint_public_access = true
 
     subnet_ids = [
         aws_subnet.private_zone1.id,
          aws_subnet.private_zone2.id
     ]
+    security_group_ids      = [aws_security_group.eks_cluster_sg.id]  # FIXED: Added security group
   }
 
   access_config {

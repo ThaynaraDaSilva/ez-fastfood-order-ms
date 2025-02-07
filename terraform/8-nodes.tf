@@ -1,3 +1,30 @@
+resource "aws_security_group" "eks_nodes_sg" {
+  name        = "eks-nodes-sg"
+  description = "Security Group for EKS Worker Nodes"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    self        = true
+  }
+
+  ingress {
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.eks_cluster_sg.id]  # FIXED: Worker nodes talk to EKS API
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_iam_role" "nodes" {
   name = "${local.eks_name}-eks-nodes-${local.env}"
 
@@ -48,10 +75,10 @@ resource "aws_eks_node_group" "general" {
   ]
 
   capacity_type  = "ON_DEMAND"
-  instance_types = ["t3.micro"]
+  instance_types = ["t3.medium"] # ajuste aplicado
 
   scaling_config {
-    desired_size = 1
+    desired_size = 2 # ajuste aplicado
     max_size = 3
     min_size = 1
   }
