@@ -1,9 +1,9 @@
 name: Build, Test, and Push Docker Image
 
 on:
-  push:
-    branches:
-        - feature/deploy-ms-configuration 
+  #push:
+  #  branches:
+  #      - feature/deploy-ms-configuration 
   pull_request:
     branches:
       - main
