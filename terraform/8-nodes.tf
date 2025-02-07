@@ -75,10 +75,10 @@ resource "aws_eks_node_group" "general" {
   ]
 
   capacity_type  = "ON_DEMAND"
-  instance_types = ["t3.micro"]
+  instance_types = ["t3.medium"] # ajuste aplicado
 
   scaling_config {
-    desired_size = 1
+    desired_size = 2 # ajuste aplicado
     max_size = 3
     min_size = 1
   }
