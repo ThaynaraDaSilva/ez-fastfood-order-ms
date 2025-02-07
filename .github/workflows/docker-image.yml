@@ -68,7 +68,7 @@ jobs:
           cat target/surefire-reports/*.txt || echo "No test results found"
 
       - name: Upload Test Report as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: target/surefire-reports
