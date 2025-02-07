@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - feature/deploy-ms-configuration
 
 env:
   JAVA_VERSION: '17'
@@ -94,7 +95,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: dasilvathaynara/ez-fast-food-api:v3
+          tags: dasilvathaynara/ez-fastfood-order-ms:latest
   deploy:
     needs: build-and-push-image
     runs-on: ubuntu-latest
@@ -114,7 +115,7 @@ jobs:
         sudo mv kubectl /usr/local/bin/
  
     - name: Update kubeconfig for EKS
-      run: aws eks update-kubeconfig --region us-east-1 --name ez-fastfood-dev
+      run: aws eks update-kubeconfig --region us-east-1 --name ez-fastfood-cluster-dev
  
     - name: Apply Kubernetes manifests
       run: |

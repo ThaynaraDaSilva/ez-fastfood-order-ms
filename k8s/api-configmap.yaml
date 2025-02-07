@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: ezfastfood-api-configmap
 data:
-  APP_NAME: "ez-fast-food"
+  APP_NAME: "ez-fastfood-order-ms"
   LOG_LEVEL_SPRINGFRAMEWORK: "ERROR"
   LOG_LEVEL_SPRINGDOC: "off"
   LOG_LEVEL_HIBERNATE_SQL: "off"

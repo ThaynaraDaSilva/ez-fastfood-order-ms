@@ -24,11 +24,11 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 
 # Copiar o jar construido
-COPY --from=build /app/target/ez-fast-food.jar /app/ez-fast-food.jar
+COPY --from=build /app/target/ez-fastfood-order-ms.jar /app/ez-fastfood-order-ms.jar
 
 
 # Exponha a porta em que a aplicação vai rodar
 #EXPOSE 8080
 
 # Comando para rodar a aplicação
-ENTRYPOINT ["java", "-jar", "ez-fast-food.jar"]
+ENTRYPOINT ["java", "-jar", "ez-fastfood-order-ms.jar"]
