@@ -63,7 +63,8 @@ mvn clean package -Pprd
 docker build -t dasilvathaynara/ez-fastfood-order-ms:latest .
 docker push dasilvathaynara/ez-fastfood-order-ms:latest
 
-
+## CONFIG ALTERADA PARA CONSEGUIR VER OS PODS:
+aws eks update-cluster-config --name ez-fastfood-cluster-dev --region us-east-1 --resources-vpc-config endpointPublicAccess=true
 
 
 ## Desenvolvido por:
