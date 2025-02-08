@@ -58,6 +58,13 @@ mvn clean package -Pdev
 ### Desta forma o 'application.properties' terá parametros que serão injetados com valores no momento de subir os pods.
 mvn clean package -Pprd
 ```
+### Publicar imagem
+
+docker build -t dasilvathaynara/ez-fastfood-order-ms:latest .
+docker push dasilvathaynara/ez-fastfood-order-ms:latest
+
+## CONFIG ALTERADA PARA CONSEGUIR VER OS PODS:
+aws eks update-cluster-config --name ez-fastfood-cluster-dev --region us-east-1 --resources-vpc-config endpointPublicAccess=true
 
 
 ## Desenvolvido por:
