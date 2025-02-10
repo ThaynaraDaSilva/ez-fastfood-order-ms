@@ -1,14 +1,19 @@
 name: Build, Test, and Push Docker Image
 
 on:
+  workflow_dispatch:
   #push:
   #  branches:
   #      - feature/deploy-ms-configuration 
-  pull_request:
-    branches:
-      - main
+#  pull_request:
+#    branches:
+#      - main
 env:
   JAVA_VERSION: '17'
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+
 
 jobs:
   setup-jdk:
@@ -72,6 +77,28 @@ jobs:
         with:
           name: test-report
           path: target/surefire-reports
+
+  sonar-analysis:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: SonarQube Scan
+        run: mvn sonar:sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.host.url=${{ env.SONAR_HOST_URL }} -Dsonar.login=${{ env.SONAR_TOKEN }}
+
+  check-quality-gate:
+    needs: sonar-analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check SonarQube Quality Gate
+        run: |
+          STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }} "${{ env.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=${{ env.SONAR_PROJECT_KEY }}" | jq -r '.projectStatus.status')
+          if [ "$STATUS" != "OK" ]; then
+            echo "Quality gate failed: $STATUS"
+            exit 1
+          fi
 
   build-and-push-image:
     needs: run-tests
