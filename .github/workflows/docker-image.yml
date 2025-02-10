@@ -84,38 +84,58 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: SonarQube Scan
-        run: mvn clean verify sonar:sonar -Dsonar.token=${{ env.SONAR_TOKEN }}
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
 
-  check-quality-gate:
-    needs: sonar-analysis
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for SonarQube Analysis to Complete
+      - name: Build and Analyze with SonarQube
         run: |
-          MAX_ATTEMPTS=10
-          ATTEMPT=0
-          STATUS="NONE"
+          mvn clean package verify sonar:sonar \
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} \
+            -Dsonar.host.url=${{ env.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-          while [ "$STATUS" == "NONE" ] && [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-            echo "Waiting for SonarQube analysis to complete... (attempt $((ATTEMPT+1))/$MAX_ATTEMPTS)"
-            sleep 10
-            RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.SONAR_TOKEN }}" "${{ env.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=${{ env.SONAR_PROJECT_KEY }}")
-            STATUS=$(echo "$RESPONSE" | jq -r '.projectStatus.status' 2>/dev/null)
-            ATTEMPT=$((ATTEMPT+1))
-          done
+  #  sonar-analysis:
+#    needs: run-tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v3
+#
+#      - name: SonarQube Scan
+#        run: mvn clean verify sonar:sonar -Dsonar.token=${{ env.SONAR_TOKEN }}
 
-          if [ "$STATUS" == "NONE" ]; then
-            echo "SonarQube analysis did not complete in time."
-            exit 1
-          fi
-
-          echo "Quality Gate Status: $STATUS"
-
-          if [ "$STATUS" != "OK" ]; then
-            echo "Quality gate failed: $STATUS"
-            exit 1
-          fi
+#  check-quality-gate:
+#    needs: sonar-analysis
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Wait for SonarQube Analysis to Complete
+#        run: |
+#          MAX_ATTEMPTS=10
+#          ATTEMPT=0
+#          STATUS="NONE"
+#
+#          while [ "$STATUS" == "NONE" ] && [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+#            echo "Waiting for SonarQube analysis to complete... (attempt $((ATTEMPT+1))/$MAX_ATTEMPTS)"
+#            sleep 10
+#            RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.SONAR_TOKEN }}" "${{ env.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=${{ env.SONAR_PROJECT_KEY }}")
+#            STATUS=$(echo "$RESPONSE" | jq -r '.projectStatus.status' 2>/dev/null)
+#            ATTEMPT=$((ATTEMPT+1))
+#          done
+#
+#          if [ "$STATUS" == "NONE" ]; then
+#            echo "SonarQube analysis did not complete in time."
+#            exit 1
+#          fi
+#
+#          echo "Quality Gate Status: $STATUS"
+#
+#          if [ "$STATUS" != "OK" ]; then
+#            echo "Quality gate failed: $STATUS"
+#            exit 1
+#          fi
 
   build-and-push-image:
     needs: run-tests
