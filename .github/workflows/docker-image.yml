@@ -1,10 +1,9 @@
 name: Build, Test, and Push Docker Image
 
 on:
-  workflow_dispatch:
-  #push:
-  #  branches:
-  #      - feature/deploy-ms-configuration 
+  push:
+    branches:
+        - test/unit-test
 #  pull_request:
 #    branches:
 #      - main
