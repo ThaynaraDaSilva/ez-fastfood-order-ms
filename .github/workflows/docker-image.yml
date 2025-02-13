@@ -52,7 +52,7 @@ jobs:
           path: target/surefire-reports
 
   sonar-analysis:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
