@@ -52,7 +52,7 @@ jobs:
       - name: SonarQube Scan
         run: mvn clean verify sonar:sonar -Dsonar.token=${{ env.SONAR_TOKEN }}
 
-            - name: Check SonarQube Quality Gate
+      - name: Check SonarQube Quality Gate
         run: |
           echo "🔍 Verificando status do Quality Gate no SonarQube..."
 
