@@ -1,14 +1,18 @@
 name: Build, Test, and Push Docker Image
 
 on:
-  #push:
-  #  branches:
-  #      - feature/deploy-ms-configuration 
-  pull_request:
+  push:
     branches:
-      - main
+        - chore/add-sonarqube
+#  pull_request:
+#    branches:
+#      - main
 env:
   JAVA_VERSION: '17'
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+
 
 jobs:
   setup-jdk:
@@ -73,6 +77,46 @@ jobs:
           name: test-report
           path: target/surefire-reports
 
+  sonar-analysis:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: SonarQube Scan
+        run: mvn clean verify sonar:sonar -Dsonar.token=${{ env.SONAR_TOKEN }}
+
+#  check-quality-gate:
+#    needs: sonar-analysis
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Wait for SonarQube Analysis to Complete
+#        run: |
+#          MAX_ATTEMPTS=10
+#          ATTEMPT=0
+#          STATUS="NONE"
+#
+#          while [ "$STATUS" == "NONE" ] && [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+#            echo "Waiting for SonarQube analysis to complete... (attempt $((ATTEMPT+1))/$MAX_ATTEMPTS)"
+#            sleep 10
+#            RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.SONAR_TOKEN }}" "${{ env.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=${{ env.SONAR_PROJECT_KEY }}")
+#            STATUS=$(echo "$RESPONSE" | jq -r '.projectStatus.status' 2>/dev/null)
+#            ATTEMPT=$((ATTEMPT+1))
+#          done
+#
+#          if [ "$STATUS" == "NONE" ]; then
+#            echo "SonarQube analysis did not complete in time."
+#            exit 1
+#          fi
+#
+#          echo "Quality Gate Status: $STATUS"
+#
+#          if [ "$STATUS" != "OK" ]; then
+#            echo "Quality gate failed: $STATUS"
+#            exit 1
+#          fi
+
   build-and-push-image:
     needs: run-tests
     runs-on: ubuntu-latest
@@ -97,30 +141,30 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: dasilvathaynara/ez-fastfood-order-ms:latest
-  deploy:
-    needs: build-and-push-image
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1 # Replace with your region
-    - name: Install kubectl
-      run: |
-        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        chmod +x kubectl
-        sudo mv kubectl /usr/local/bin/
- 
-    - name: Update kubeconfig for EKS
-      run: aws eks update-kubeconfig --region us-east-1 --name ez-fastfood-cluster-dev
- 
-    - name: Apply Kubernetes manifests
-      run: |
-        kubectl apply -f k8s/api-deployment.yaml --validate=false
-        kubectl apply -f k8s/api-service.yaml
-        kubectl apply -f k8s/api-configmap.yaml
-        kubectl apply -f k8s/ezfastfood-secrets.yaml
+#  deploy:
+#    needs: build-and-push-image
+#    runs-on: ubuntu-latest
+#    steps:
+#    - name: Checkout repository
+#      uses: actions/checkout@v3
+#    - name: Configure AWS credentials
+#      uses: aws-actions/configure-aws-credentials@v2
+#      with:
+#        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#        aws-region: us-east-1 # Replace with your region
+#    - name: Install kubectl
+#      run: |
+#        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+#        chmod +x kubectl
+#        sudo mv kubectl /usr/local/bin/
+#
+#    - name: Update kubeconfig for EKS
+#      run: aws eks update-kubeconfig --region us-east-1 --name ez-fastfood-cluster-dev
+#
+#    - name: Apply Kubernetes manifests
+#      run: |
+#        kubectl apply -f k8s/api-deployment.yaml --validate=false
+#        kubectl apply -f k8s/api-service.yaml
+#        kubectl apply -f k8s/api-configmap.yaml
+#        kubectl apply -f k8s/ezfastfood-secrets.yaml

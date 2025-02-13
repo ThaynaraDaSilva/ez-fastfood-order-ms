@@ -20,8 +20,14 @@
     <java.version>17</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <project.build.sourceEncondig>UTF-8</project.build.sourceEncondig>
-    <project.reporting.outputEncondig>UTF-8</project.reporting.outputEncondig>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+
+    <sonar.projectKey>ThaynaraDaSilva_ez-fastfood-order-ms</sonar.projectKey>
+    <sonar.organization>ez-fastfood</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
   </properties>
 
   <profiles>
@@ -108,16 +114,25 @@
       <version>42.2.24</version>
     </dependency>
 
+    <!--Verificar se ter a dependencia realmente e necessaria - spring-boot-starter-test ja inclui Junit5-->
+    <!--    testar 5.8.2-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.junit.jupiter</groupId>-->
+    <!--      <artifactId>junit-jupiter</artifactId>-->
+    <!--      <version>5.7.0</version>-->
+    <!--      <scope>test</scope>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.junit.jupiter</groupId>-->
+    <!--      <artifactId>junit-jupiter-engine</artifactId>-->
+    <!--      <version>5.7.0</version> &lt;!&ndash; You can use the latest version
+    &ndash;&gt;-->
+    <!--      <scope>test</scope>-->
+    <!--    </dependency>-->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>5.7.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>5.7.0</version> <!-- You can use the latest version -->
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>4.0.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -140,19 +155,20 @@
       <artifactId>sqs</artifactId>
       <version>2.29.49</version>
     </dependency>
-    
-     <!-- Spring Retry -->
+
+    <!-- Spring Retry -->
     <dependency>
-        <groupId>org.springframework.retry</groupId>
-        <artifactId>spring-retry</artifactId>
-        <version>1.3.4</version> <!-- Última versão estável -->
+      <groupId>org.springframework.retry</groupId>
+      <artifactId>spring-retry</artifactId>
+      <version>1.3.4</version> <!-- Última versão estável -->
     </dependency>
 
     <!-- Spring Aspects para habilitar a funcionalidade -->
     <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-aspects</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
     </dependency>
+
 
   </dependencies>
 
@@ -207,6 +223,13 @@
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.8</version>
       </plugin>
+
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.10.0.2594</version>
+      </plugin>
+
 
     </plugins>
   </build>
