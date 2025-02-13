@@ -52,40 +52,30 @@ jobs:
       - name: SonarQube Scan
         run: mvn clean verify sonar:sonar -Dsonar.token=${{ env.SONAR_TOKEN }}
 
-      - name: Check SonarQube Quality Gate
+      - name: ⏳ Aguardando processamento do SonarCloud
+        run: sleep 30
+
+      - name: 🔍 Verificando status do Quality Gate no SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: "ThaynaraDaSilva_ez-fastfood-order-ms"
         run: |
-          echo "🔍 Verificando status do Quality Gate no SonarQube..."
+          response=$(curl -s -w "%{http_code}" -u "$SONAR_TOKEN:" \
+            "https://sonarcloud.io/api/qualitygates/project_status?projectKey=$SONAR_PROJECT_KEY")
 
-          # Verificar se o token não está vazio
-          if [ -z "${{ env.SONAR_TOKEN }}" ]; then
-            echo "❌ Erro: SONAR_TOKEN não está definido!"
-            exit 1
-          fi
-
-          # Fazer a requisição com autenticação
-          response=$(curl -s -w "%{http_code}" -u "${{ env.SONAR_TOKEN }}:" \
-            "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ env.SONAR_PROJECT_KEY }}")
-
-          # Separar corpo da resposta e status HTTP
           http_status="${response: -3}"
           json_body="${response:0:-3}"
 
           echo "🔹 Código HTTP recebido: $http_status"
           echo "📜 Resposta da API: $json_body"
 
-          # Se a resposta não for 200, pode indicar erro de autenticação
-          if [[ "$http_status" -ne 200 ]]; then
-            echo "❌ Erro: A API retornou um código HTTP diferente de 200!"
-            exit 1
-          fi
-
-          # Validar se a resposta é um JSON válido antes de usar jq
+          # Se a resposta não for um JSON válido, exibir erro
           if ! echo "$json_body" | jq . > /dev/null 2>&1; then
             echo "❌ Erro: A resposta da API não é um JSON válido!"
             exit 1
           fi
 
-          # Extrair status do Quality Gate
+          # Extraindo status do Quality Gate
           status=$(echo "$json_body" | jq -r '.projectStatus.status')
 
           echo "🚦 Status do Quality Gate: $status"
@@ -94,6 +84,9 @@ jobs:
             echo "❌ O Quality Gate falhou!"
             exit 1
           fi
+
+      - name: ✅ Pipeline finalizado com sucesso
+        run: echo "🎉 Tudo certo! O Quality Gate foi aprovado."
 
 
   build-and-push-image:
