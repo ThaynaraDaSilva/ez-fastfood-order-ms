@@ -61,15 +61,21 @@ jobs:
       - name: SonarQube Scan
         run: mvn clean verify sonar:sonar -Dsonar.token=${{ env.SONAR_TOKEN }}
       
-      - name: Check SonarQube Quality Gate
+      - name: ⏳ Aguardando processamento do SonarCloud
+        run: sleep 10
+      - name: 🔍 Verificando status do Quality Gate no SonarQube
         run: |
           response=$(curl -s -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ env.SONAR_PROJECT_KEY }}")
           status=$(echo "$response" | jq -r '.projectStatus.status')
-          echo "Quality Gate Status: $status"
+          
+          echo "🚦 Status do Quality Gate: $status"
+          
           if [[ "$status" != "OK" ]]; then
-            echo "Quality Gate failed!"
+            echo "❌ O Quality Gate falhou!"
             exit 1
           fi
+      - name: ✅ Pipeline finalizado com sucesso
+        run: echo "🎉 Tudo certo! O Quality Gate foi aprovado."
 
   build-and-push-image:
     needs: sonar-analysis
