@@ -1,66 +1,100 @@
-/*
- * package br.com.fiap.ez.fastfood.domain.model;
- * 
- * import org.junit.jupiter.api.BeforeEach; import org.junit.jupiter.api.Test;
- * import static org.junit.jupiter.api.Assertions.*; import static
- * org.mockito.Mockito.*;
- * 
- * class OrderItemTest {
- * 
- * private OrderItem orderItem; private Order order; private Product product;
- * private Integer quantity; private Double price;
- * 
- * @BeforeEach void setUp() { order = mock(Order.class); product =
- * mock(Product.class); quantity = 2; price = 5.50;
- * 
- * orderItem = new OrderItem(order, product, quantity, price); }
- * 
- * @Test void testOrderItemConstructor() { assertEquals(order,
- * orderItem.getOrder()); assertEquals(product, orderItem.getProduct());
- * assertEquals(quantity, orderItem.getQuantity()); assertEquals(price,
- * orderItem.getPrice()); }
- * 
- * @Test void testGetTotalPrice() { Double totalPrice =
- * orderItem.getTotalPrice();
- * 
- * assertEquals(11.00, totalPrice); }
- * 
- * @Test void testSettersAndGetters() { Order newOrder = mock(Order.class);
- * Product newProduct = mock(Product.class); Integer newQuantity = 3; Double
- * newPrice = 7.99;
- * 
- * orderItem.setOrder(newOrder); orderItem.setProduct(newProduct);
- * orderItem.setQuantity(newQuantity); orderItem.setPrice(newPrice);
- * 
- * assertEquals(newOrder, orderItem.getOrder()); assertEquals(newProduct,
- * orderItem.getProduct()); assertEquals(newQuantity, orderItem.getQuantity());
- * assertEquals(newPrice, orderItem.getPrice()); }
- * 
- * @Test void testGetTotalPriceWithDifferentValues() { orderItem.setQuantity(5);
- * orderItem.setPrice(12.99);
- * 
- * Double totalPrice = orderItem.getTotalPrice();
- * 
- * assertEquals(64.95, totalPrice); }
- * 
- * @Test void testGetId() { Long id = 1L; orderItem.setId(id);
- * 
- * Long returnedId = orderItem.getId();
- * 
- * assertEquals(id, returnedId); }
- * 
- * @Test void testSetId() { Long id = 1L;
- * 
- * orderItem.setId(id);
- * 
- * assertEquals(id, orderItem.getId()); }
- * 
- * @Test void testDefaultConstructor() { OrderItem defaultOrderItem = new
- * OrderItem();
- * 
- * assertNull(defaultOrderItem.getId());
- * assertNull(defaultOrderItem.getOrder());
- * assertNull(defaultOrderItem.getProduct());
- * assertNull(defaultOrderItem.getQuantity());
- * assertNull(defaultOrderItem.getPrice()); } }
- */
+package br.com.fiap.ez.fastfood.domain.model;
+
+import br.com.fiap.ez.fastfood.infrastructure.mapper.OrderItemMapper;
+import br.com.fiap.ez.fastfood.infrastructure.persistence.OrderItemEntity;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class OrderItemTest {
+
+    private Order order;
+    private OrderItem orderItem;
+
+    @BeforeEach
+    public void setUp() {
+        order = new Order();
+        orderItem = new OrderItem(order, 1L, 2, 10.0);
+    }
+
+    @Test
+    public void testDefaultConstructor() {
+        OrderItem defaultOrderItem = new OrderItem();
+        Assertions.assertNull(defaultOrderItem.getId());
+        Assertions.assertNull(defaultOrderItem.getOrder());
+        Assertions.assertNull(defaultOrderItem.getProductId());
+        Assertions.assertNull(defaultOrderItem.getQuantity());
+        Assertions.assertNull(defaultOrderItem.getPrice());
+    }
+
+    @Test
+    public void testParameterizedConstructor() {
+        Assertions.assertEquals(order, orderItem.getOrder());
+        Assertions.assertEquals(1L, orderItem.getProductId());
+        Assertions.assertEquals(2, orderItem.getQuantity());
+        Assertions.assertEquals(10.0, orderItem.getPrice());
+    }
+
+    @Test
+    public void testGettersAndSetters() {
+        orderItem.setId(1L);
+        Assertions.assertEquals(1L, orderItem.getId());
+
+        Order newOrder = new Order();
+        orderItem.setOrder(newOrder);
+        Assertions.assertEquals(newOrder, orderItem.getOrder());
+
+        orderItem.setProductId(2L);
+        Assertions.assertEquals(2L, orderItem.getProductId());
+
+        orderItem.setQuantity(3);
+        Assertions.assertEquals(3, orderItem.getQuantity());
+
+        orderItem.setPrice(20.0);
+        Assertions.assertEquals(20.0, orderItem.getPrice());
+    }
+
+    @Test
+    public void testGetTotalPrice() {
+        Assertions.assertEquals(20.0, orderItem.getTotalPrice());
+    }
+
+    @Test
+    void testEntityToDomainList() {
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setProductId(1L);
+        orderItemEntity.setQuantity(2);
+        orderItemEntity.setPrice(10.0);
+
+        List<OrderItemEntity> orderItemEntities = Collections.singletonList(orderItemEntity);
+        List<OrderItem> orderItems = OrderItemMapper.entityToDomain(orderItemEntities);
+
+        assertEquals(1, orderItems.size());
+        OrderItem orderItem = orderItems.get(0);
+        assertEquals(orderItemEntity.getProductId(), orderItem.getProductId());
+        assertEquals(orderItemEntity.getQuantity(), orderItem.getQuantity());
+        assertEquals(orderItemEntity.getPrice(), orderItem.getPrice());
+    }
+
+    @Test
+    void testDomainToEntityList() {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProductId(1L);
+        orderItem.setQuantity(2);
+        orderItem.setPrice(10.0);
+
+        List<OrderItem> orderItems = Collections.singletonList(orderItem);
+        List<OrderItemEntity> orderItemEntities = OrderItemMapper.domainToEntity(orderItems);
+
+        assertEquals(1, orderItemEntities.size());
+        OrderItemEntity orderItemEntity = orderItemEntities.get(0);
+        assertEquals(orderItem.getProductId(), orderItemEntity.getProductId());
+        assertEquals(orderItem.getQuantity(), orderItemEntity.getQuantity());
+        assertEquals(orderItem.getPrice(), orderItemEntity.getPrice());
+    }
+}

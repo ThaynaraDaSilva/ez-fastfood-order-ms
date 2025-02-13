@@ -30,6 +30,9 @@ public class OrderRepositoryImpl implements OrderRepository {
 	@Override
 	public Order findOrderById(Long id) {
 		OrderEntity entity = jpaOrderRepository.findById(id).orElse(null);
+		if (entity == null) {
+			return null;
+		}
 		return OrderMapper.entityToDomain(entity);
 	}
 
