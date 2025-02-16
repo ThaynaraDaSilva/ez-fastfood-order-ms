@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ezfastfood-order-ms
+  name: ezfastfood-order-ms-deployment
 spec:
   replicas: 1
   selector:
