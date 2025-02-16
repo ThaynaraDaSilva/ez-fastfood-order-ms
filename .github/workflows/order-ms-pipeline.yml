@@ -160,7 +160,7 @@ jobs:
        sudo mv kubectl /usr/local/bin/
 
    - name: Update kubeconfig for EKS
-     run: aws eks update-kubeconfig --region us-east-1 --name ${{ env.EKS_CLUSTER_NAME}}
+     run: aws eks update-kubeconfig --region us-east-1 --name ${{env.EKS_CLUSTER_NAME}}
 
    - name: Apply Kubernetes manifests
      run: |
