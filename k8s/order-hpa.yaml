@@ -6,7 +6,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: ezfastfood-api-deployment  # Deployment to scale
+    name: ezfastfood-order-ms  # Deployment to scale
   minReplicas: 1                   # Minimum number of pods
   maxReplicas: 3                   # Maximum number of pods
   metrics:

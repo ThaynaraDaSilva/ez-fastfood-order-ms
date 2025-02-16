@@ -5,7 +5,7 @@
   <groupId>br.com.fiap</groupId>
   <artifactId>ez-fastfood-order-ms</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>ez-fast-food</name>
+  <name>ez-fastfood-order</name>
   <description>ez-fastfood-order-ms</description>
   <packaging>jar</packaging>
 

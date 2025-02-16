@@ -1,17 +1,17 @@
 name: Build, Test, and Push Docker Image
 
-#on:
- #pull_request:
-   #branches:
-    # - main
 on:
-  workflow_dispatch:
+  push:
+    branches:
+    - develop
+    - chore/payment-ms-integration
   
 env:
   JAVA_VERSION: '17'
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
   SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+  DOCKER_FILE_TAG: 'dasilvathaynara/ez-fastfood-order-ms:latest'
+  EKS_CLUSTER_NAME: 'ez-fastfood-cluster-dev'
 
 
 jobs:
@@ -140,7 +140,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: dasilvathaynara/ez-fastfood-order-ms:latest
+          tags: ${{ env.DOCKER_FILE_TAG}}
 #  deploy:
 #    needs: build-and-push-image
 #    runs-on: ubuntu-latest

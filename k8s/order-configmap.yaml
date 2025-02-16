@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ezfastfood-api-configmap
+  name: ezfastfood-order-configmap
 data:
   APP_NAME: "ez-fastfood-order-ms"
   LOG_LEVEL_SPRINGFRAMEWORK: "ERROR"
