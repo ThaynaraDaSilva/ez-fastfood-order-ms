@@ -17,7 +17,7 @@ spec:
       containers:
       - name: ezfastfood-order-ms-container
         image: dasilvathaynara/ez-fastfood-order-ms:latest
-        imagePullPolicy: IfNotPresent # sempre baixa a ultima versao
+        imagePullPolicy: Always # sempre baixa a ultima versao
         ports:
         - containerPort: 8080
         env:
