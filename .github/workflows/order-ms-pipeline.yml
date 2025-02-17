@@ -12,9 +12,6 @@ env:
   SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
   DOCKER_FILE_TAG: 'dasilvathaynara/ez-fastfood-order-ms:latest'
   EKS_CLUSTER_NAME: 'ez-fastfood-cluster-dev'
-  SQS_ACCESS_KEY: ${{ secrets.AWS_SQS_ACCESS_KEY }}
-  SQS_SECRET_KEY: ${{ secrets.AWS_SQS_SECRET_KEY }}
-
 
 jobs:
   setup-jdk:
@@ -42,9 +39,6 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
 
       - name: Build with Maven
-        env:
-          SQS_ACCESS_KEY: ${{ env.SQS_ACCESS_KEY }}
-          SQS_SECRET_KEY: ${{ env.SQS_SECRET_KEY }}
         run: mvn -f ./pom.xml clean package -Pprd
 
   run-tests:
