@@ -1,8 +1,6 @@
 package br.com.fiap.ez.fastfood.application.usecases;
 
 import br.com.fiap.ez.fastfood.adapters.out.http.CatalogHttpClient;
-import br.com.fiap.ez.fastfood.adapters.out.http.PaymentHttpClient;
-import br.com.fiap.ez.fastfood.adapters.out.http.ProductHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.messaging.PaymentPublisher;
 import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
@@ -10,17 +8,13 @@ import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
 import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
-import br.com.fiap.ez.fastfood.application.dto.PaymentResponseDTO;
 import br.com.fiap.ez.fastfood.application.dto.UserDTO;
 import br.com.fiap.ez.fastfood.domain.model.*;
-
 import br.com.fiap.ez.fastfood.domain.repository.OrderRepository;
-
 import br.com.fiap.ez.fastfood.frameworks.exception.BusinessException;
 import br.com.fiap.ez.fastfood.infrastructure.mapper.OrderMapper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
