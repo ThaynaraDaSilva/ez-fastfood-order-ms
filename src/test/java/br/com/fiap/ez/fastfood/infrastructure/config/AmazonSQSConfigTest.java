@@ -29,7 +29,8 @@ public class AmazonSQSConfigTest {
 	@Test
 	void testSqsClient() {
 		when(amazonSQSProperties.getRegion()).thenReturn("us-east-1");
-
+		when(amazonSQSProperties.getAccessKey()).thenReturn("dummyAccessKey");
+	    when(amazonSQSProperties.getSecretKey()).thenReturn("dummySecretKey");
 
 		SqsClient sqsClient = amazonSQSConfig.sqsClient();
 
