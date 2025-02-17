@@ -164,7 +164,12 @@ jobs:
 
    - name: Apply Kubernetes manifests
      run: |
-       kubectl apply -f k8s/order-deployment.yaml --validate=false
-       kubectl apply -f k8s/order-service.yaml
+       kubectl apply -f k8s/order-serviceaccount.yaml
        kubectl apply -f k8s/order-configmap.yaml
        kubectl apply -f k8s/order-secrets.yaml
+       kubectl apply -f k8s/order-service.yaml
+       kubectl apply -f k8s/order-deployment.yaml --validate=false
+       
+       
+       
+       

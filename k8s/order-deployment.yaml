@@ -12,6 +12,7 @@ spec:
       labels:
         app: ezfastfood-order-ms
     spec:
+      serviceAccountName: ezfastfood-order-sa # service account
       nodeSelector:
         service: order
       containers:
