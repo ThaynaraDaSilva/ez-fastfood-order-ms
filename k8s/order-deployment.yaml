@@ -11,10 +11,10 @@ spec:
     metadata:
       labels:
         app: ezfastfood-order-ms
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::637423288778:role/eks-irsa-sqs-role  # Força a annotation no Pod
+     # annotations:
+        #eks.amazonaws.com/role-arn: arn:aws:iam::637423288778:role/eks-irsa-sqs-role  # Força a annotation no Pod
     spec:
-      serviceAccountName: ezfastfood-order-sa # service account
+      #serviceAccountName: ezfastfood-order-sa # service account
       nodeSelector:
         service: order
       containers:
