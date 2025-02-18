@@ -81,15 +81,13 @@ public class OrderUseCase {
 
 		saveOrder.setOrderNumber(saveOrder.generateOrderNumber(lastOrder));
 		Order savedOrder = orderRepository.save(saveOrder);
-		System.out.println("#################### SALVOU O PEDIDO ##################");
-
 		try {
 
 			PaymentPublisherRequestDTO paymentRequest = new PaymentPublisherRequestDTO();
 			paymentRequest.setOrderId(savedOrder.getId());
 			paymentRequest.setUserId(savedOrder.getUserId());
 			paymentRequest.setAmount(savedOrder.getTotalPrice());
-			System.out.println("#################### TENTARA ACIONAR O PUBLISH PAYMENT ##################");
+		
 			paymentPublisher.publishPaymentRequest(paymentRequest);
 
 		} catch (Exception e) {
@@ -148,11 +146,11 @@ public class OrderUseCase {
 	public OrderResponseDTO notifyOrderPaymentStatus (PaymentIntegrationDTO dto) {
 		Order order = orderRepository.findOrderById(dto.getOrderId());
 		if(order!=null) {
-			if(dto.getPaymentStatus().toUpperCase().equals("OK")) {
+			//if(dto.getPaymentStatus().toUpperCase().equals("OK")) {
 				order.setStatus(OrderStatus.RECEIVED);
-			}else {
-				order.setStatus(OrderStatus.CANCELLED);
-			}
+			//}else {
+				//order.setStatus(OrderStatus.CANCELLED);
+			//}
 			order.setOrderTime(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
 			return OrderMapper.domainToResponseDTO(orderRepository.save(order));
 		}else {
