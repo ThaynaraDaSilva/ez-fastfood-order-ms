@@ -1,71 +1,80 @@
 # ez-fastfood-orders-ms
 
 ## Contextualização
+O "**ez-fastfood-order-ms**" é um microsserviço responsável gestão de **pedido**, desenvolvido para uma lanchonete em expansão. Ele adota a arquitetura limpa (clean architecture) e é implantado com AWS EKS, aproveitando os recursos de orquestração de contêineres para otimizar a disponilidade.
 
 ## Desenho de arquitetura
 
-## Apresentação da arquitetura: 
+**inserir imagem aqui**
+
+## Video de apresentação da arquitetura
+
+**inserir link aqui**
 
 ## Estrutura de diretórios do projeto
 ```
-br.com.fiap.ez.fastfood
-├── adapters
-│   ├── in
-│   │   └── controller
-│   └── out
-│       └── repository
-├── application
-│   ├── usecases
-│   └── dto
-├── domain
-│   ├── model
-│   └── repository
-├── frameworks
-│   ├── config
-│   └── exception
-├── infrastructure
-│   ├── config
-│   ├── mapper
-│   └── persistence
-├── APIApplication.java
-k8s/                      # Arquivos de manifesto Kubernetes
-postman-jmeter/            # Collection para testes no Postman e Apache JMeter
+├── src/main/java
+│   └── br.com.fiap.ez.fastfood
+│       ├── adapters
+│       │   ├── in.controller
+│       │   │   └── OrderController.java
+│       │   └── out
+│       │       ├── http
+│       │       ├── messaging
+│       │       └── repository
+│       ├── application
+│       │   ├── dto
+│       │   └── usecases
+│       ├── domain
+│       │   ├── model
+│       │   └── repository
+│       ├── frameworks
+│       │   ├── config
+│       │   ├── exception
+│       ├── infrastructure
+│       │   ├── config
+│       │   ├── mapper
+│       │   ├── persistence
+│       │   └── ApiApplication.java
+│
+├── src/main/resources
+├── src/test/java
+├── k8s
 ```
-
 ## Modelagem do banco de dados
 
-## Pré requisitos:
+Durante o processo de segregação do monolito para microsserviços, optamos por manter o banco de dados **PostgreSQL** para o microsserviço **ez-fastfood-order-ms**. Essa decisão foi tomada para **minimizar custos e evitar retrabalho** na migração de um domínio considerado ***core*** para a lanchonete. Além disso, o PostgreSQL, por ser um banco relacional, garante a integridade dos dados e a confiabilidade das operações de pedidos.
 
-## Tecnologias utilizadas
+![Image](https://github.com/user-attachments/assets/863479e4-9731-421e-925c-4bfe32604248)
+
+OBS...: Foi criada uma instancia RDS Postgres e schema: **ez_fastfood_order** para isolar o banco dos demais microsserviços.
+
+## Pré requisitos
+
+Tecnologias utilizadas:
 
 - Java 17
 - Spring Boot 3.3.1
 - Hibernate
 - RDS PostgreSQL 13.17
-- DockerHub (https://hub.docker.com/repository/docker/dasilvathaynara/ez-fast-food-api/general)
+- DockerHub (https://hub.docker.com/repository/docker/dasilvathaynara/ez-fastfood-order-ms/general)
 - Kubernetes
 - OpenApi
 
 ## Endpoints
 
+**inserir imagem aqui**
+
 ### Como compilar o projeto (caso necessário)
 ```sh
-git clone https://github.com/ThaynaraDaSilva/ez-fast-food-clean-architecture.git
-cd ez-fast-food-clean-architecture
+git clone https://github.com/ThaynaraDaSilva/ez-fastfood-order-ms.git
+cd ez-fastfood-order-ms
 ### Compilação local
 mvn clean package -Pdev
 ## Compilação para publicação com K8s
 ### Desta forma o 'application.properties' terá parametros que serão injetados com valores no momento de subir os pods.
 mvn clean package -Pprd
 ```
-### Publicar imagem
-
-docker build -t dasilvathaynara/ez-fastfood-order-ms:latest .
-docker push dasilvathaynara/ez-fastfood-order-ms:latest
-
-## CONFIG ALTERADA PARA CONSEGUIR VER OS PODS:
-aws eks update-cluster-config --name ez-fastfood-cluster-dev --region us-east-1 --resources-vpc-config endpointPublicAccess=true
-
 
 ## Desenvolvido por:
 @tchfer : RM357414<br>
