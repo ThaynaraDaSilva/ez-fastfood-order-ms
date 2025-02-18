@@ -148,7 +148,7 @@ public class OrderUseCase {
 	public OrderResponseDTO notifyOrderPaymentStatus (PaymentIntegrationDTO dto) {
 		Order order = orderRepository.findOrderById(dto.getOrderId());
 		if(order!=null) {
-			if(dto.getPaymentStatus().equalsIgnoreCase("OK")) {
+			if(dto.getPaymentStatus().toUpperCase().equals("OK")) {
 				order.setStatus(OrderStatus.RECEIVED);
 			}else {
 				order.setStatus(OrderStatus.CANCELLED);
