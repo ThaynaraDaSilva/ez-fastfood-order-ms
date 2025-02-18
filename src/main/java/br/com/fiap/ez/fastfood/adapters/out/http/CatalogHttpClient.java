@@ -10,7 +10,7 @@ import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
 public interface CatalogHttpClient {
 	
 	
-	 @GetMapping("/find-product-by-id/{id}")
+	 @GetMapping("/find-by-id/{id}")
 	 CatalogDTO findProductById(@PathVariable("id") Long id);
 
 }

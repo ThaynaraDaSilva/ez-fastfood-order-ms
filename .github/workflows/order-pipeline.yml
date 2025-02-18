@@ -45,7 +45,6 @@ jobs:
   unit-tests:
     needs: build-artifact
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -75,7 +74,6 @@ jobs:
   static-code-analysis:
     needs: unit-tests
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -102,8 +100,10 @@ jobs:
         run: echo "🎉 Quality Gate Passed."
 
   docker-build-push:
+    needs:
+      - build-artifact
+      - static-code-analysis
     runs-on: ubuntu-latest
-    if: contains('refs/heads/develop', github.ref) || contains('refs/heads/main', github.ref)
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -151,7 +151,7 @@ jobs:
 
       - name: Apply Kubernetes manifests
         run: |
-          kubectl apply -f k8s/catalog-deployment.yaml --validate=false
-          kubectl apply -f k8s/catalog-service.yaml
-          kubectl apply -f k8s/catalog-configmap.yaml
-          kubectl apply -f k8s/catalog-secrets.yaml
+          kubectl apply -f k8s/order-deployment.yaml --validate=false
+          kubectl apply -f k8s/order-service.yaml
+          kubectl apply -f k8s/order-configmap.yaml
+          kubectl apply -f k8s/order-secrets.yaml
