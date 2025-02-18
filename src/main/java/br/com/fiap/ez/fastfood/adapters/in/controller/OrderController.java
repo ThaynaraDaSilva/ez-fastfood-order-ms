@@ -75,8 +75,7 @@ public class OrderController {
 			@ApiResponse(responseCode = "400", description = "Invalid input data") })
 	@PostMapping(path = "/notify-payment-status", produces = "application/json")
 	public ResponseEntity<?> notifyOrderPaymentStatus (@Valid @RequestBody PaymentIntegrationDTO dto) {
-		
-		return new ResponseEntity<>(orderUseCase.notifyOrderPaymentStatus(dto), HttpStatus.OK);
+		return new ResponseEntity<>(orderUseCase.notifyOrderPaymentStatus(dto).getOrderStatus().toString(), HttpStatus.OK);
 	}
 
 }
