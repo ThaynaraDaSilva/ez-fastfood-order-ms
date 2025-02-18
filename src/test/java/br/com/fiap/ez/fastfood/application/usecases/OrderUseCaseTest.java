@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import br.com.fiap.ez.fastfood.application.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,12 +19,6 @@ import org.mockito.MockitoAnnotations;
 import br.com.fiap.ez.fastfood.adapters.out.http.CatalogHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.messaging.PaymentPublisher;
-import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
-import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
-import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
-import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
-import br.com.fiap.ez.fastfood.application.dto.PaymentPublisherRequestDTO;
-import br.com.fiap.ez.fastfood.application.dto.UserDTO;
 import br.com.fiap.ez.fastfood.domain.model.Order;
 import br.com.fiap.ez.fastfood.domain.model.OrderStatus;
 import br.com.fiap.ez.fastfood.domain.repository.OrderRepository;
@@ -286,5 +281,42 @@ class OrderUseCaseTest {
         });
 
         assertEquals("Não há pedidos com status 'Pronto', 'Em preparação' ou 'Recebido'", exception.getMessage());
+    }
+
+    @Test
+    void testNotifyOrderPaymentStatus() {
+        PaymentIntegrationDTO paymentIntegrationDTO = new PaymentIntegrationDTO();
+        paymentIntegrationDTO.setOrderId(1L);
+        paymentIntegrationDTO.setPaymentStatus("OK");
+
+        Order order = new Order();
+        order.setId(1L);
+        order .setStatus(OrderStatus.WAITING_PAYMENT);
+        order.setOrderTime(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
+        order.setOrderItems(new ArrayList<>());
+
+        when(orderRepository.findOrderById(1L)).thenReturn(order);
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+
+        OrderResponseDTO response = orderUseCase.notifyOrderPaymentStatus(paymentIntegrationDTO);
+
+        assertNotNull(response);
+        assertEquals(OrderStatus.RECEIVED, response.getOrderStatus());
+        assertEquals(order.getOrderTime(), response.getOrderTime());
+    }
+
+    @Test
+    void testNotifyOrderPaymentStatusOrderNotFound() {
+        PaymentIntegrationDTO paymentIntegrationDTO = new PaymentIntegrationDTO();
+        paymentIntegrationDTO.setOrderId(1L);
+        paymentIntegrationDTO.setPaymentStatus("OK");
+
+        when(orderRepository.findOrderById(1L)).thenReturn(null);
+
+        BusinessException exception = assertThrows(BusinessException.class, () -> {
+            orderUseCase.notifyOrderPaymentStatus(paymentIntegrationDTO);
+        });
+
+        assertEquals("Order not found", exception.getMessage());
     }
 }
