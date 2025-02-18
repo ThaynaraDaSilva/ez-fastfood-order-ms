@@ -104,7 +104,6 @@ jobs:
 
   docker-build-push:
     runs-on: ubuntu-latest
-    s
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
