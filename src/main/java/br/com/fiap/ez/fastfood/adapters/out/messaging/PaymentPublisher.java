@@ -30,12 +30,13 @@ public class PaymentPublisher {
     public void publishPaymentRequest(PaymentPublisherRequestDTO paymentRequest) {
         try {
             String messageBody = new ObjectMapper().writeValueAsString(paymentRequest);
-
+            System.out.println("#################### ANTES DE SAVE MESSAGE ON PUBLISH PAYMENT ##################");
             SendMessageRequest sendMessageRequest = SendMessageRequest.builder()
                     .queueUrl(sqsProperties.getPaymentQueueUrl()) // Use the property from the config class
                     .messageBody(messageBody)
                     .build();
             sqsClient.sendMessage(sendMessageRequest);
+            System.out.println("#################### POS SEND MESSAGE ON PUBLISH PAYMENT ##################");
         } catch (Exception e) {
             throw new RuntimeException("Failed to publish payment request to SQS", e);
         }
