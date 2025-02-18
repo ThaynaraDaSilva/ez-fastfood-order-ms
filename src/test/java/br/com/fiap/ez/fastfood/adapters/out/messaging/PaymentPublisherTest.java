@@ -3,7 +3,7 @@ package br.com.fiap.ez.fastfood.adapters.out.messaging;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentPublisherRequestDTO;
 import br.com.fiap.ez.fastfood.infrastructure.config.AmazonSQSProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ public class PaymentPublisherTest {
 
     @Test
     void testPublishPaymentRequest() throws Exception {
-        PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
+        PaymentPublisherRequestDTO paymentRequest = new PaymentPublisherRequestDTO();
         paymentRequest.setOrderId(1L);
         paymentRequest.setUserId(2L);
         paymentRequest.setAmount(100.0);
@@ -53,7 +53,7 @@ public class PaymentPublisherTest {
 
     @Test
     void testPublishPaymentRequestThrowsException() {
-        PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
+        PaymentPublisherRequestDTO paymentRequest = new PaymentPublisherRequestDTO();
         when(sqsProperties.getPaymentQueueUrl()).thenReturn("http://localhost:4566/queue/payment-queue");
         doThrow(new RuntimeException("SQS error")).when(sqsClient).sendMessage(any(SendMessageRequest.class));
 

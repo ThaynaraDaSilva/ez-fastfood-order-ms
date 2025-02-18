@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentPublisherRequestDTO;
 import br.com.fiap.ez.fastfood.infrastructure.config.AmazonSQSProperties;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
@@ -27,7 +27,7 @@ public class PaymentPublisher {
     }
 
     @Retryable (value = Exception.class, maxAttempts = 3, backoff = @Backoff(delay = 1000)) //1seg de intervalo
-    public void publishPaymentRequest(PaymentRequestDTO paymentRequest) {
+    public void publishPaymentRequest(PaymentPublisherRequestDTO paymentRequest) {
         try {
             String messageBody = new ObjectMapper().writeValueAsString(paymentRequest);
 

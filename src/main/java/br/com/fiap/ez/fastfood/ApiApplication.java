@@ -9,9 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import br.com.fiap.ez.fastfood.infrastructure.config.HttpClientProperties;
 
 @SpringBootApplication
-//(exclude = { SecurityAutoConfiguration.class })
 @EnableFeignClients
-//@EnableConfigurationProperties(HttpClientProperties.class)
 public class ApiApplication {
 	
 	  public static void main(String[] args) {

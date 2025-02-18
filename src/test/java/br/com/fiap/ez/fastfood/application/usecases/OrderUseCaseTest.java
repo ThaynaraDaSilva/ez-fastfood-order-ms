@@ -16,14 +16,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import br.com.fiap.ez.fastfood.adapters.out.http.CatalogHttpClient;
-import br.com.fiap.ez.fastfood.adapters.out.http.PaymentHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.messaging.PaymentPublisher;
 import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
 import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
-import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentPublisherRequestDTO;
 import br.com.fiap.ez.fastfood.application.dto.UserDTO;
 import br.com.fiap.ez.fastfood.domain.model.Order;
 import br.com.fiap.ez.fastfood.domain.model.OrderStatus;
@@ -87,7 +86,7 @@ class OrderUseCaseTest {
         assertNotNull(response);
         assertEquals(savedOrder.getId(), response.getOrderId());
         assertEquals(savedOrder.getOrderNumber(), response.getOrderNumber());
-        verify(paymentPublisher).publishPaymentRequest(any(PaymentRequestDTO.class));
+        verify(paymentPublisher).publishPaymentRequest(any(PaymentPublisherRequestDTO.class));
     }
 
     @Test
@@ -120,7 +119,7 @@ class OrderUseCaseTest {
         assertNotNull(response);
         assertEquals(savedOrder.getId(), response.getOrderId());
         assertEquals(savedOrder.getOrderNumber(), response.getOrderNumber());
-        verify(paymentPublisher).publishPaymentRequest(any(PaymentRequestDTO.class));
+        verify(paymentPublisher).publishPaymentRequest(any(PaymentPublisherRequestDTO.class));
     }
 
     @Test

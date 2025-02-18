@@ -6,8 +6,9 @@ import br.com.fiap.ez.fastfood.adapters.out.messaging.PaymentPublisher;
 import br.com.fiap.ez.fastfood.application.dto.CatalogDTO;
 import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderItemDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentIntegrationDTO;
 import br.com.fiap.ez.fastfood.application.dto.OrderResponseDTO;
-import br.com.fiap.ez.fastfood.application.dto.PaymentRequestDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentPublisherRequestDTO;
 import br.com.fiap.ez.fastfood.application.dto.UserDTO;
 import br.com.fiap.ez.fastfood.domain.model.*;
 import br.com.fiap.ez.fastfood.domain.repository.OrderRepository;
@@ -29,7 +30,6 @@ public class OrderUseCase {
 	private final UserHttpClient userHttpClient;
 	private final PaymentPublisher paymentPublisher;
 	
-	//private static final Logger LOGGER = LogManager.getLogger(PaymentPublisher.class);
 
 	public OrderUseCase(OrderRepository orderRepository, CatalogHttpClient catalogHttpClient,
 			UserHttpClient userHttpClient, PaymentPublisher paymentPublisher) {
@@ -84,7 +84,7 @@ public class OrderUseCase {
 
 		try {
 
-			PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
+			PaymentPublisherRequestDTO paymentRequest = new PaymentPublisherRequestDTO();
 			paymentRequest.setOrderId(savedOrder.getId());
 			paymentRequest.setUserId(savedOrder.getUserId());
 			paymentRequest.setAmount(savedOrder.getTotalPrice());
@@ -142,6 +142,22 @@ public class OrderUseCase {
 			throw new BusinessException("Não há pedidos com status 'Pronto', 'Em preparação' ou 'Recebido'");
 		}
 
+	}
+	
+	public OrderResponseDTO notifyOrderPaymentStatus (PaymentIntegrationDTO dto) {
+		Order order = orderRepository.findOrderById(dto.getOrderId());
+		if(order!=null) {
+			if(dto.getPaymentStatus().toUpperCase().equals("OK")) {
+				order.setStatus(OrderStatus.RECEIVED);
+			}else {
+				order.setStatus(OrderStatus.CANCELLED);
+			}
+			order.setOrderTime(ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")));
+			return OrderMapper.domainToResponseDTO(orderRepository.save(order));
+		}else {
+			throw new BusinessException("Order not found");
+		}
+		
 	}
 
 }

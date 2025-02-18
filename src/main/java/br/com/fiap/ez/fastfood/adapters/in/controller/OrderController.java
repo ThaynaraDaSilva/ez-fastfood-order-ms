@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.fiap.ez.fastfood.application.dto.CreateOrderDTO;
+import br.com.fiap.ez.fastfood.application.dto.PaymentIntegrationDTO;
 import br.com.fiap.ez.fastfood.application.usecases.OrderUseCase;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -68,5 +69,13 @@ public class OrderController {
 
 		return new ResponseEntity<>(orderUseCase.updateOrderStatus(orderId), HttpStatus.OK);
 	}
-
+	
+	@Operation(summary = "Register order payment status")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Order payment status registered"),
+			@ApiResponse(responseCode = "400", description = "Invalid input data") })
+	@PostMapping(path = "/notify-payment-status", produces = "application/json")
+	public ResponseEntity<?> notifyOrderPaymentStatus (@Valid @RequestBody PaymentIntegrationDTO dto) {
+		
+		return new ResponseEntity<>(orderUseCase.notifyOrderPaymentStatus(dto), HttpStatus.OK);
+	}
 }

@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import br.com.fiap.ez.fastfood.domain.model.OrderStatus;
-import io.swagger.v3.oas.annotations.media.Schema;
+
 
 
 
@@ -25,10 +23,6 @@ public class OrderResponseDTO {
 	@JsonProperty("user_id")
 	private Long userId;
 	
-	/*@JsonInclude(JsonInclude.Include.NON_NULL)
-	@JsonProperty("user_cpf")
-	@Schema(description = "User CPF (optional)", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-	private String userCpf = "";*/
 
 	@JsonProperty("user_name")
 	private String userName = "";
