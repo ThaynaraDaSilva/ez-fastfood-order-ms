@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ezfastfood-order-ms
+  name: ezfastfood-order-ms-deployment
 spec:
   replicas: 1
   selector:
@@ -12,6 +12,8 @@ spec:
       labels:
         app: ezfastfood-order-ms
     spec:
+      nodeSelector:
+        service: order
       containers:
       - name: ezfastfood-order-ms-container
         image: dasilvathaynara/ez-fastfood-order-ms:latest
@@ -24,21 +26,31 @@ spec:
         - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
-              name: ezfastfood-secret         # Reference to the Secret holding the sensitive info
+              name: ezfastfood-order-secret         # Reference to the Secret holding the sensitive info
               key: POSTGRES_DB                # The key in the Secret
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: ezfastfood-secret         # Reference to the Secret holding the sensitive info
+              name: ezfastfood-order-secret         # Reference to the Secret holding the sensitive info
               key: POSTGRES_USER              # The key in the Secret
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: ezfastfood-secret         # Reference to the Secret holding the sensitive info
+              name: ezfastfood-order-secret         # Reference to the Secret holding the sensitive info
               key: POSTGRES_PASSWORD          # The key in the Secret
+        - name: SQS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ezfastfood-order-secret         # Reference to the Secret holding the sensitive info
+              key: SQS_ACCESS_KEY               # The key in the Secret  
+        - name: SQS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ezfastfood-order-secret         # Reference to the Secret holding the sensitive info
+              key: SQS_SECRET_KEY              # The key in the Secret     
         envFrom:
         - configMapRef:
-            name: ezfastfood-api-configmap    # Reference to the ConfigMap for non-sensitive data
+            name: ezfastfood-order-configmap    # Reference to the ConfigMap for non-sensitive data
         resources:
           requests:
             cpu: "250m"

@@ -1,3 +1,4 @@
+
 package br.com.fiap.ez.fastfood.infrastructure.config;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,29 +9,31 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
 public class AmazonSQSConfigTest {
 
-    @Mock
-    private AmazonSQSProperties amazonSQSProperties;
+	@Mock
+	private AmazonSQSProperties amazonSQSProperties;
 
-    @InjectMocks
-    private AmazonSQSConfig amazonSQSConfig;
+	@InjectMocks
+	private AmazonSQSConfig amazonSQSConfig;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+	@BeforeEach
+	void setUp() {
+		MockitoAnnotations.openMocks(this);
+	}
 
-    @Test
-    void testSqsClient() {
-        when(amazonSQSProperties.getRegion()).thenReturn("us-east-1");
-        when(amazonSQSProperties.getAccessKey()).thenReturn("testAccessKey");
-        when(amazonSQSProperties.getSecretKey()).thenReturn("testSecretKey");
+	@Test
+	void testSqsClient() {
+		when(amazonSQSProperties.getRegion()).thenReturn("us-east-1");
+		when(amazonSQSProperties.getAccessKey()).thenReturn("dummyAccessKey");
+	    when(amazonSQSProperties.getSecretKey()).thenReturn("dummySecretKey");
 
-        SqsClient sqsClient = amazonSQSConfig.sqsClient();
+		SqsClient sqsClient = amazonSQSConfig.sqsClient();
 
-        assertNotNull(sqsClient);
-    }
+		assertNotNull(sqsClient);
+	}
 }

@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import br.com.fiap.ez.fastfood.adapters.out.http.CatalogHttpClient;
-import br.com.fiap.ez.fastfood.adapters.out.http.PaymentHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.http.UserHttpClient;
 import br.com.fiap.ez.fastfood.adapters.out.messaging.PaymentPublisher;
 import br.com.fiap.ez.fastfood.application.usecases.OrderUseCase;

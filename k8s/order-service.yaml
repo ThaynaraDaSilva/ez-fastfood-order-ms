@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ezfastfood-order-ms
+  name: ezfastfood-order-service
 spec:
   type: LoadBalancer # Internal communication - alterado de ClusterIP para loadbalancer
   selector:

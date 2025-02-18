@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class PaymentRequestDTOTest {
+class PaymentPublisherRequestDTOTest {
 
-    private PaymentRequestDTO paymentRequestDTO;
+    private PaymentPublisherRequestDTO paymentRequestDTO;
 
     @BeforeEach
     void setUp() {
-        paymentRequestDTO = new PaymentRequestDTO();
+        paymentRequestDTO = new PaymentPublisherRequestDTO();
     }
 
     @Test
