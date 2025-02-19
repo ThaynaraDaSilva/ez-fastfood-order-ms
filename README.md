@@ -3,14 +3,6 @@
 ## Contextualização
 O "**ez-fastfood-order-ms**" é um microsserviço responsável gestão de **pedido**, desenvolvido para uma lanchonete em expansão. Ele adota a arquitetura limpa (clean architecture) e é implantado com AWS EKS, aproveitando os recursos de orquestração de contêineres para otimizar a disponilidade.
 
-## Desenho de arquitetura
-
-**inserir imagem aqui**
-
-## Video de apresentação da arquitetura
-
-**inserir link aqui**
-
 ## Estrutura de diretórios do projeto
 ```
 ├── src/main/java
@@ -61,9 +53,6 @@ Tecnologias utilizadas:
 - Kubernetes
 - OpenApi
 
-## Endpoints
-
-**inserir imagem aqui**
 
 ### Como compilar o projeto (caso necessário)
 ```sh
